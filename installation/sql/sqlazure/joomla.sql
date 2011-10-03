@@ -389,7 +389,7 @@ CREATE TABLE [#__contact_details](
 	[misc] [nvarchar](max) NULL DEFAULT NULL,
 	[image] [nvarchar](255) NULL DEFAULT NULL,
 	[email_to] [nvarchar](255) NULL DEFAULT NULL,
-	[default_con] [int] NOT NULL DEFAULT '0', 
+	[default_con] [int] NOT NULL DEFAULT '0',
 	[published] [int] NOT NULL ,
 	[checked_out] [int] NOT NULL,
 	[checked_out_time] [datetime] NOT NULL DEFAULT '1900-01-01T00:00:00.000',
@@ -878,7 +878,9 @@ SELECT 444, 'plg_finder_content', 'plugin', 'content', 'finder', 0, 1, 1, 0, '',
 UNION ALL
 SELECT 445, 'plg_finder_newsfeeds', 'plugin', 'newsfeeds', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1900-01-01 00:00:00', 4, 0
 UNION ALL
-SELECT 446, 'plg_finder_weblinks', 'plugin', 'weblinks', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1900-01-01 00:00:00', 5, 0;
+SELECT 446, 'plg_finder_weblinks', 'plugin', 'weblinks', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1900-01-01 00:00:00', 5, 0
+UNION ALL
+SELECT 447, 'plg_system_router', 'plugin', 'router', 'system', 0, 1, 1, 0, '', '{}', '', '', 0, '1900-01-01 00:00:00', 5, 0;
 
 INSERT INTO #__extensions (extension_id, name, type, element, folder, client_id, enabled, access, protected, manifest_cache, params, custom_data, system_data, checked_out, checked_out_time, ordering, state)
 SELECT 500, 'atomic', 'template', 'atomic', '', 0, 1, 1, 0, '{"name":"atomic","type":"template","creationDate":"10\/10\/09","author":"Ron Severdia","copyright":"Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.","authorEmail":"contact@kontentdesign.com","authorUrl":"http:\/\/www.kontentdesign.com","version":"2.5.0","description":"TPL_ATOMIC_XML_DESCRIPTION","group":""}', '{}', '', '', 0, '1900-01-01 00:00:00', 0, 0
@@ -1486,7 +1488,7 @@ CREATE TABLE [#__finder_terms](
 	[stem] [nvarchar](75) NOT NULL,
 	[common] [tinyint] NOT NULL DEFAULT '0',
 	[phrase] [tinyint] NOT NULL DEFAULT '0',
-	[weight] [real] NOT NULL DEFAULT '0', 
+	[weight] [real] NOT NULL DEFAULT '0',
 	[soundex] [nvarchar](75) NOT NULL,
 	[links] [int] NOT NULL DEFAULT '0',
 	[language] [nvarchar](3) NOT NULL DEFAULT ''
@@ -1691,7 +1693,7 @@ CREATE TABLE [#__finder_tokens_aggregate](
 	[common] [tinyint] NOT NULL DEFAULT '0',
 	[phrase] [tinyint] NOT NULL DEFAULT '0',
 	[term_weight] [real] NOT NULL,
-	[context] [tinyint] NOT NULL DEFAULT '2', 
+	[context] [tinyint] NOT NULL DEFAULT '2',
 	[context_weight] [real] NOT NULL,
 	[total_weight] [real] NOT NULL,
 	[language] [nvarchar](3) NOT NULL DEFAULT ''

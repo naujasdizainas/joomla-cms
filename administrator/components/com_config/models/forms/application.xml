@@ -427,61 +427,18 @@
 		name="seo"
 		label="CONFIG_SEO_SETTINGS_LABEL">
 		<field
-			name="sef"
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="COM_CONFIG_FIELD_SEF_URL_LABEL"
-			description="COM_CONFIG_FIELD_SEF_URL_DESC"
-			filter="integer">
-			<option
-				value="1">JYES</option>
-			<option
-				value="0">JNO</option>
-		</field>
+			name="sef_rules"
+			type="sefrules"
+			default="0"
+			label="COM_CONFIG_FIELD_SEF_RULES_LABEL"
+			description="COM_CONFIG_FIELD_SEF_RULES_DESC"/>
 
 		<field
-			name="sef_rewrite"
-			type="radio"
-			class="btn-group"
+			name="sef_component_rules"
+			type="componentsefrules"
 			default="0"
-			label="COM_CONFIG_FIELD_SEF_REWRITE_LABEL"
-			description="COM_CONFIG_FIELD_SEF_REWRITE_DESC"
-			filter="integer">
-			<option
-				value="1">JYES</option>
-			<option
-				value="0">JNO</option>
-		</field>
-
-		<field
-			name="sef_suffix"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="COM_CONFIG_FIELD_SEF_SUFFIX_LABEL"
-			description="COM_CONFIG_FIELD_SEF_SUFFIX_DESC"
-			filter="integer">
-			<option
-				value="1">JYes</option>
-			<option
-				value="0">JNo</option>
-		</field>
-
-		<field
-			name="unicodeslugs"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="COM_CONFIG_FIELD_UNICODESLUGS_LABEL"
-			description="COM_CONFIG_FIELD_UNICODESLUGS_DESC"
-			filter="integer">
-			<option
-				value="1">JYES</option>
-			<option
-				value="0">JNO</option>
-		</field>
-
+			label="COM_CONFIG_FIELD_SEF_COMPONENT_RULES_LABEL"
+			description="COM_CONFIG_FIELD_SEF_RULES_DESC"/>
 
 		<field
 			name="sitename_pagetitles"

@@ -561,7 +561,8 @@ INSERT INTO "#__extensions" ("extension_id", "name", "type", "element", "folder"
 (443, 'plg_finder_contacts', 'plugin', 'contacts', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1970-01-01 00:00:00', 2, 0),
 (444, 'plg_finder_content', 'plugin', 'content', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1970-01-01 00:00:00', 3, 0),
 (445, 'plg_finder_newsfeeds', 'plugin', 'newsfeeds', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1970-01-01 00:00:00', 4, 0),
-(446, 'plg_finder_weblinks', 'plugin', 'weblinks', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1970-01-01 00:00:00', 5, 0);
+(446, 'plg_finder_weblinks', 'plugin', 'weblinks', 'finder', 0, 1, 1, 0, '', '{}', '', '', 0, '1970-01-01 00:00:00', 5, 0),
+(447, 'plg_system_router', 'plugin', 'router', 'system', 0, 1, 1, 0, '', '{}', '', '', 0, '1970-01-01 00:00:00', 0, 0);
 
 -- Templates
 INSERT INTO "#__extensions" ("extension_id", "name", "type", "element", "folder", "client_id", "enabled", "access", "protected", "manifest_cache", "params", "custom_data", "system_data", "checked_out", "checked_out_time", "ordering", "state") VALUES
