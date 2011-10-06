@@ -119,11 +119,8 @@ class plgSystemRouter extends JPlugin
 		 */
 		$component	= preg_replace('/[^A-Z0-9_\.-]/i', '', $option);
 		$tmp		= '';
-		$function	= $router->getComponentRouter($component);
-		$parts		= call_user_func_array($function, array(&$query));
-
-		// encode the route segments
-		$parts = self::_encodeSegments($parts);
+		$comprouter	= $router->getComponentRouter($component);
+		$parts		= $comprouter->build(&$query);
 
 		$result = implode('/', $parts);
 		if ($router->getOptions('sef_suffix', 0) && !(substr($result, -9) == 'index.php' || substr($result, -1) == '/')) {
@@ -261,14 +258,9 @@ class plgSystemRouter extends JPlugin
 
 			// Handle component	route
 			$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $uri->getVar('option'));
-			$function = $router->getComponentRouter($component, 'Parse');
+			$comprouter = $router->getComponentRouter($component);
 
-			if(is_string($function)) {
-				//decode the route segments
-				$segments = self::_decodeSegments($segments);
-			}
-
-			$uri->setQuery(array_merge($uri->getQuery(true),call_user_func($function, $segments)));
+			$uri->setQuery(array_merge($uri->getQuery(true),$comprouter->parse($segments)));
 		}
 
 		$uri->setQuery(array_merge($uri->getQuery(true), $vars));
@@ -321,38 +313,6 @@ class plgSystemRouter extends JPlugin
 		$menu->setActive($item->id);
 
 		return true;
-	}
-
-	/**
-	 * Encode route segments
-	 *
-	 * @param	array	An array of route segments
-	 * @return  array
-	 */
-	protected static function _encodeSegments($segments)
-	{
-		$total = count($segments);
-		for ($i=0; $i<$total; $i++) {
-			$segments[$i] = str_replace(':', '-', $segments[$i]);
-		}
-
-		return $segments;
-	}
-
-	/**
-	 * Decode route segments
-	 *
-	 * @param	array	An array of route segments
-	 * @return  array
-	 */
-	protected static function _decodeSegments($segments)
-	{
-		$total = count($segments);
-		for ($i=0; $i<$total; $i++)  {
-			$segments[$i] = preg_replace('/-/', ':', $segments[$i], 1);
-		}
-
-		return $segments;
 	}
 
 	public static function buildComponentSEF($crouter, $query, $segments)
