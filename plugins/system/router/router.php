@@ -92,27 +92,24 @@ class plgSystemRouter extends JPlugin
 	 * @param JRouter calling JRouter object
 	 * @param JURI URL to be processed
 	 */
-	public static function buildSEF(&$router, &$uri)
+	public static function buildSEF(&$router, JURI &$uri)
 	{
+		$query = $uri->getQuery(true);
+		
 		// Make sure any menu vars are used if no others are specified
-		if ($uri->getVar('Itemid') && count($uri->getQuery(true)) == 2) {
-
+		if (isset($query['Itemid']) && count($query) == 2) {
 			// Get the active menu item
-			$itemid = $uri->getVar('Itemid');
-			$item = self::$menu->getItem($itemid);
+			$item = self::$menu->getItem($query['Itemid']);
 
 			if ($item) {
-				$uri->setQuery($item->query);
+				$query = array_merge($query, $item->query);
 			}
-			$uri->setVar('Itemid', $itemid);
 		}
 
-		$option = $uri->getVar('option');
+		$option = $query['option'];
 		if (!$option) {
 			return;
 		}
-
-		$query = $uri->getQuery(true);
 
 		/*
 		 * Build the component route

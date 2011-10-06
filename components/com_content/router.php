@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  *
  *
  */
-class ContentRouter extends JComponentRouter implements JComponentRouterInterface
+class ContentRouter extends JComponentRouter
 {
 	function __construct()
 	{

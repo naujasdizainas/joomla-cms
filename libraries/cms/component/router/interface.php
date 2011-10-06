@@ -1,4 +1,21 @@
 <?php
+/**
+ * @package     Joomla.Libraries
+ * @subpackage  Component
+ *
+ * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('JPATH_PLATFORM') or die;
+
+/**
+ * Interface for component routing
+ *
+ * @package     Joomla.Libraries
+ * @subpackage  Component
+ * @since       X.X
+ */
 interface JComponentRouterInterface {
 	/**
 	 * Build method for URLs

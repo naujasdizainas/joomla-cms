@@ -73,6 +73,8 @@ class JRouterSite extends JRouter
 	 *
 	 * @param string $component Componentname with com_ prefix
 	 * @param object $router Componentrouter
+	 *
+	 * @return boolean True if the router was accepted, false if not
 	 */
 	public function setComponentRouter($component, $router)
 	{

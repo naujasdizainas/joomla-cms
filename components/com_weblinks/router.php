@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  *
  *
  */
-class WeblinksRouter extends JComponentRouter implements JComponentRouterInterface
+class WeblinksRouter extends JComponentRouter
 {
 	function __construct()
 	{

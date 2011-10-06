@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  *
  *
  */
-class ContactRouter extends JComponentRouter implements JComponentRouterInterface
+class ContactRouter extends JComponentRouter
 {
 	function __construct()
 	{
