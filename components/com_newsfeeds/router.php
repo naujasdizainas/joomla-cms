@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  *
  *
  */
-class NewsfeedRouter extends JComponentRouter
+class NewsfeedRouter extends JComponentRouter implements JComponentRouterInterface
 {
 	function __construct()
 	{

@@ -120,7 +120,7 @@ class plgSystemRouter extends JPlugin
 		$component	= preg_replace('/[^A-Z0-9_\.-]/i', '', $option);
 		$tmp		= '';
 		$comprouter	= $router->getComponentRouter($component);
-		$parts		= $comprouter->build(&$query);
+		$parts		= $comprouter->build($query);
 
 		$result = implode('/', $parts);
 		if ($router->getOptions('sef_suffix', 0) && !(substr($result, -9) == 'index.php' || substr($result, -1) == '/')) {

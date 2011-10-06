@@ -138,7 +138,7 @@ class JComponentRouter
 		}
 	}
 
-	function build($query)
+	function build(&$query)
 	{
 		$segments = array();
 		// Process the parsed variables based on custom defined rules
@@ -148,7 +148,7 @@ class JComponentRouter
 		return $segments;
 	}
 
-	function parse($segments)
+	function parse(&$segments)
 	{
 		$vars = array();
 		// Process the parsed variables based on custom defined rules
