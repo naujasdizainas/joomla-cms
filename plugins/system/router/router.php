@@ -70,7 +70,7 @@ class plgSystemRouter extends JPlugin
 	 * @param JRouter calling JRouter object
 	 * @param JURI URL to be processed
 	 */
-	public static function processItemID(&$router, &$uri)
+	public static function processItemID(JRouter $router, JURI $uri)
 	{
 		// Get the itemid form the URI
 		$itemid = $uri->getVar('Itemid');
@@ -92,7 +92,7 @@ class plgSystemRouter extends JPlugin
 	 * @param JRouter calling JRouter object
 	 * @param JURI URL to be processed
 	 */
-	public static function buildSEF(&$router, JURI &$uri)
+	public static function buildSEF(JRouter $router, JURI $uri)
 	{
 		$query = $uri->getQuery(true);
 		
@@ -169,7 +169,7 @@ class plgSystemRouter extends JPlugin
 		}
 	}
 
-	public static function forceSSL($router, $uri)
+	public static function forceSSL(JRouter $router, JURI $uri)
 	{
 		if (strtolower($uri->getScheme()) != 'https') {
 			//forward to https
@@ -179,7 +179,7 @@ class plgSystemRouter extends JPlugin
 		return array();
 	}
 
-	public static function cleanupPath($router, $uri)
+	public static function cleanupPath(JRouter $router, JURI $uri)
 	{
 		// Get the path
 		$path = $uri->getPath();
@@ -194,7 +194,7 @@ class plgSystemRouter extends JPlugin
 		$uri->setPath(trim($path , '/'));
 	}
 
-	public static function parseSEF($router, $uri)
+	public static function parseSEF(JRouter $router, JURI $uri)
 	{
 		$app	= JFactory::getApplication();
 		$menu	= $app->getMenu();
@@ -285,7 +285,7 @@ class plgSystemRouter extends JPlugin
 		return true;
 	}
 
-	public static function parseRAW($router, $uri)
+	public static function parseRAW(JRouter $router, JURI $uri)
 	{
 		$vars	= array();
 		$app	= JFactory::getApplication();

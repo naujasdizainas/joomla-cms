@@ -25,9 +25,9 @@ abstract class WeblinksHelperRoute
 	public static function getWeblinkRoute($id, $catid)
 	{
 		//Create the link
-		$link = 'index.php?option=com_weblinks&view=weblink&id='. $id;
+		$link = array('option' => 'com_weblinks', 'view' => 'weblink', 'id' => $id);
 		if ($catid > 1) {
-			$link .= '&catid='.$catid;
+			$link['catid'] = $catid;
 		}
 
 		return $link;
@@ -57,7 +57,7 @@ abstract class WeblinksHelperRoute
 	public static function getCategoryRoute($catid)
 	{
 		//Create the link
-		$link = 'index.php?option=com_weblinks&view=category&id='.$catid;
+		$link = array('option' => 'com_weblinks', 'view' => 'category', 'id' => $catid);
 
 		return $link;
 	}

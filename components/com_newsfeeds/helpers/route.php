@@ -24,10 +24,10 @@ abstract class NewsfeedsHelperRoute
 	public static function getNewsfeedRoute($id, $catid)
 	{
 		//Create the link
-		$link = 'index.php?option=com_newsfeeds&view=newsfeed&id='. $id;
+		$link = array('option' => 'com_newsfeeds', 'view' => 'newsfeed', 'id' => $id);
 
 		if ((int)$catid > 1) {
-			$link .= '&catid='.$catid;
+			$link['catid'] = $catid;
 		}
 
 		return $link;
@@ -36,7 +36,7 @@ abstract class NewsfeedsHelperRoute
 	public static function getCategoryRoute($catid)
 	{
 		//Create the link
-		$link = 'index.php?option=com_newsfeeds&view=category&id='.$catid;
+		$link = array('option' => 'com_newsfeeds', 'view' => 'category', 'id' => $catid);
 
 		return $link;
 	}
