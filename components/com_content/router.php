@@ -20,7 +20,7 @@ class ContentRouter extends JComponentRouter
 	function __construct()
 	{
 		$this->register('categories', 'categories');
-		$this->register('category', 'category', 'id', 'categories', '', true);
+		$this->register('category', 'category', 'id', 'categories', '', true, array('default', 'blog'));
 		$this->register('article', 'article', 'id', 'category', 'catid');
 		$this->register('archive', 'archive');
 		$this->register('featured', 'featured');

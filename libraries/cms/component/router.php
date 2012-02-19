@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Component
  * @since       X.X
  */
-class JComponentRouter
+class JComponentRouter implements JComponentRouterInterface
 {
 	/**
 	 * Array of buildrules
@@ -72,13 +72,19 @@ class JComponentRouter
 			if (isset($item->query['view']))
 			{
 				$view = $item->query['view'];
-				if (!isset($this->lookup[$view])) {
-					$this->lookup[$view] = array();
-				}
-				if ($views[$view]->id && isset($item->query[$views[$view]->id])) {
-					$this->lookup[$view][$item->query[$views[$view]->id]] = $item->id;
+				if (isset($item->query['layout'])) {
+					$layout = $item->query['layout'];
 				} else {
-					$this->lookup[$view] = $item->id;
+					$layout = 'default';
+				}
+				$key = $view.':'.$layout;
+				if (!isset($this->lookup[$key])) {
+					$this->lookup[$key] = array();
+				}
+				if ($views[$key]->id && isset($item->query[$views[$key]->id])) {
+					$this->lookup[$key][$item->query[$views[$key]->id]] = $item->id;
+				} else {
+					$this->lookup[$key] = $item->id;
 				}
 			}
 		}
@@ -93,36 +99,49 @@ class JComponentRouter
 	 * @param string $parent Internal name of the parent view
 	 * @param string $parent_id Identifier of the ID variable used to identify the content item of the parent view
 	 * @param bool $nestable Is this view nestable?
-	 * @param string $layouts Layout to use for this view by default
+	 * @param string $layouts Layout to use for this view by default, can also be an array of layout names
 	 *
 	 * @return void
 	 *
 	 * @since 11.3
 	 */
-	function register($name, $view, $id = false, $parent = false, $parent_id = false, $nestable = false, $layouts = false)
+	function register($name, $view, $id = false, $parent = false, $parent_id = false, $nestable = false, $layouts = 'default')
 	{
 		$viewobj = new stdClass();
-		$viewobj->name = $view;
-		$viewobj->title = $name;
+		$viewobj->view = $view;
+		$viewobj->name = $name;
 		$viewobj->id = $id;
+		$layouts = (array) $layouts;
+		$layout = array_shift($layouts);
+
 		if($parent) {
-			$viewobj->parent = $this->views[$parent];
-			$this->views[$parent]->children[] = &$viewobj;
-			$viewobj->path = $this->views[$parent]->path;
+			foreach($this->views as $key => $par) {
+				if($par->name == $parent) {
+					$parkey = $key;
+					break;
+				}
+			}
+			$viewobj->parent = $this->views[$parkey];
+			$this->views[$parkey]->children[] = &$viewobj;
+			$viewobj->path = $this->views[$parkey]->path;
 		} else {
 			$viewobj->parent = false;
 			$viewobj->path = array();
 		}
-		$viewobj->path[] = $name;
+		$viewobj->path[] = $view.':'.$layout;
+		$viewobj->child_id = false;
 		$viewobj->parent_id = $parent_id;
 		if($parent_id) {
-			$this->views[$parent]->child_id = $parent_id;
+			$this->views[$parkey]->child_id = $parent_id;
 		}
-		$viewobj->child_id = false;
 		$viewobj->nestable = $nestable;
+		$viewobj->layout = $layout;
 		$viewobj->layouts = $layouts;
 
-		$this->views[$view] = $viewobj;
+		$this->views[$view.':'.$layout] = $viewobj;
+		foreach($layouts as $additional) {
+			$this->views[$view.':'.$additional] = $viewobj;
+		}
 	}
 
 	/**
@@ -150,30 +169,37 @@ class JComponentRouter
 		$views = $this->getViews();
 		$result = array();
 		$id = false;
-		if(isset($query['view']) && isset($views[$query['view']])) {
-			$path = array_reverse($views[$query['view']]->path);
+		if(isset($query['view'])) {
+			$view = $query['view'];
+			if(isset($query['layout'])) {
+				$layout = $query['layout'];
+			} else {
+				$layout = 'default';
+			}
+			$viewobj = $views[$view.':'.$layout];
+		}
+		if(isset($viewobj)) {
+			$path = array_reverse($viewobj->path);
+
 			$start = true;
 			foreach($path as $element) {
 				$view = $views[$element];
-				$id = $view->child_id;
 				if($start) {
 					$id = $view->id;
 					$start = false;
+				} else {
+					$id = $view->child_id;
 				}
-				if($id) {
-					if(isset($query[$id])) {
-						$result[$view->name] = array($query[$id]);
-						if($view->nestable) {
-							$nestable = call_user_func_array(array($this, 'get'.ucfirst($view->name)), array($query[$id]));
-							if($nestable) {
-								$result[$view->name] = array_reverse($nestable->getPath());
-							}
+				if($id && isset($query[$id])) {
+					$result[$element] = array($query[$id]);
+					if($view->nestable) {
+						$nestable = call_user_func_array(array($this, 'get'.ucfirst($view->view)), array($query[$id]));
+						if($nestable) {
+							$result[$element] = array_reverse($nestable->getPath());
 						}
-					} else {
-						return $result;
 					}
 				} else {
-					$result[$view->name] = true;
+					$result[$element] = true;
 				}
 			}
 		}
@@ -300,6 +326,7 @@ class JComponentRouter
 	 */
 	function getCategory($id)
 	{
+		jimport('joomla.application.categories');
 		$category = JCategories::getInstance($this->getName())->get($id);
 		return $category;
 	}

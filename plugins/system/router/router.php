@@ -312,13 +312,14 @@ class plgSystemRouter extends JPlugin
 		return true;
 	}
 
-	public static function buildComponentSEF($crouter, $query, $segments)
-	{
+	public static function buildComponentSEF(JComponentRouter $crouter, &$query, &$segments)
+	{/**
 		if(!isset($query['Itemid'])) {
 			$segments[] = $query['view'];
 			$views = $crouter->getViews();
-			if(isset($views[$query['view']]->id)) {
-				$segments[] = $query[$views[$query['view']]->id];
+			$map = $crouter->getViewMap($query['view']);
+			if(isset($views[$map[0]]->id)) {
+				$segments[] = $query[$views[$map[0]]->id];
 				unset($query[$views[$query['view']]->id]);
 			}
 			unset($query['view']);
@@ -327,8 +328,30 @@ class plgSystemRouter extends JPlugin
 		}
 		$item = self::$menu->getItem($query['Itemid']);
 
+		$path = array_reverse($crouter->getPath($query));**/
+		/**
 		$views = $crouter->getViews();
+		$map = $crouter->getViewMap($query['view']);		
+		if(isset($query['layout'])) {
+			$layout = $query['layout'];
+		} else {
+			$layout = 'default';
+		}
+		
+		foreach($map as $mapitem) {
+			if($views[$mapitem]->layout == $layout) {
+				$viewobj = $views[$mapitem];
+				break;
+			}
+		}
+		
+		foreach($path as $view => $element) {
+			if($item->query['view'] == $view) {
+				
+			}
+		}
 
+		var_dump($path, $query);
 		if(isset($item->query['view']) && $item->query['view'] == $query['view']) {
 			$view = $views[$query['view']];
 			if(isset($item->query[$view->id]) && $item->query[$view->id] == (int) $query[$view->id]) {
@@ -392,7 +415,7 @@ class plgSystemRouter extends JPlugin
 		unset($query['view']);
 		unset($query['ts']);
 		unset($query[$views[$view]->id]);
-		return;
+		return;**/
 	}
 
 	public static function parseComponentSEF($router, $segments, $vars)
