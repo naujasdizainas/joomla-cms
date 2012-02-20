@@ -140,7 +140,7 @@ class JRouter
 			$this->_mode = JROUTER_MODE_RAW;
 		}
 
-		$this->options = (array) $options;
+		$this->setOptions((array) $options);
 	}
 
 	/**

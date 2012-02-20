@@ -56,7 +56,7 @@ class JRoute
 
 		if (!is_array($url) && (strpos($url, '&') !== 0) && (strpos($url, 'index.php') !== 0))
 		{
-			return $url;
+			return (string) $url;
 		}
 
 		// Build route.
@@ -71,7 +71,12 @@ class JRoute
 		 * https and need to set our secure URL to the current request URL, if not, and the scheme is
 		 * 'http', then we need to do a quick string manipulation to switch schemes.
 		 */
-		if ((int) $ssl || $uri->isSSL())
+		if ($uri->isSSL())
+		{
+			$ssl = 1;
+		}
+
+		if ((int) $ssl)
 		{
 			static $host_port;
 

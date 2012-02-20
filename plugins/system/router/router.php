@@ -312,46 +312,36 @@ class plgSystemRouter extends JPlugin
 		return true;
 	}
 
+    /**
+     * Build the component part of a SEF URL
+     *
+     * @param JComponentRouter $crouter Component Router object
+     * @param array $query query elements of the URL
+     * @param array $segments path elements of the resulting URL
+     * @return array path elements of the resulting URL
+     */
 	public static function buildComponentSEF(JComponentRouter $crouter, &$query, &$segments)
-	{/**
+	{
+        //Create the URL when no Itemid has been found
 		if(!isset($query['Itemid'])) {
 			$segments[] = $query['view'];
 			$views = $crouter->getViews();
-			$map = $crouter->getViewMap($query['view']);
-			if(isset($views[$map[0]]->id)) {
-				$segments[] = $query[$views[$map[0]]->id];
+			if(isset($views[$query['view']]->id)) {
+				$segments[] = $query[$views[$query['view']]->id];
 				unset($query[$views[$query['view']]->id]);
 			}
 			unset($query['view']);
 			unset($query['ts']);
 			return;
 		}
+
+        //Get the menu item belonging to the Itemid that has been found
 		$item = self::$menu->getItem($query['Itemid']);
 
-		$path = array_reverse($crouter->getPath($query));**/
-		/**
-		$views = $crouter->getViews();
-		$map = $crouter->getViewMap($query['view']);		
-		if(isset($query['layout'])) {
-			$layout = $query['layout'];
-		} else {
-			$layout = 'default';
-		}
-		
-		foreach($map as $mapitem) {
-			if($views[$mapitem]->layout == $layout) {
-				$viewobj = $views[$mapitem];
-				break;
-			}
-		}
-		
-		foreach($path as $view => $element) {
-			if($item->query['view'] == $view) {
-				
-			}
-		}
+        //Get all views for this component
+        $views = $crouter->getViews();
 
-		var_dump($path, $query);
+        //Return directly when the URL of the Itemid is identical with the URL to build
 		if(isset($item->query['view']) && $item->query['view'] == $query['view']) {
 			$view = $views[$query['view']];
 			if(isset($item->query[$view->id]) && $item->query[$view->id] == (int) $query[$view->id]) {
@@ -368,14 +358,15 @@ class plgSystemRouter extends JPlugin
 			}
 		}
 
-		$path = array_reverse($crouter->getPath($query));
+        //get the path from the view of the current URL and parse it to the menu item
+		$path = array_reverse($crouter->getPath($query));//var_dump($path);
 		$found = false;
 		$found2 = true;
 		for($i = 0, $j = count($path); $i < $j; $i++) {
 			reset($path);
 			$view = key($path);
 			if($found) {
-				$ids = array_shift($path);
+				$ids = array_shift($path);//var_dump($ids, $views[$view]);
 				if($views[$view]->nestable) {
 					foreach(array_reverse($ids) as $id) {
 						if($found2) {
@@ -409,42 +400,40 @@ class plgSystemRouter extends JPlugin
 			unset($query[$views[$view]->child_id]);
 		}
 		if(isset($query['layout']) && isset($views[$view]->layouts[$query['layout']])) {
-			$segments[] = $views[$view]->layouts[$query['layout']];
+			//$segments[] = $views[$view]->layouts[$query['layout']];
 		}
 		unset($query['layout']);
 		unset($query['view']);
 		unset($query['ts']);
 		unset($query[$views[$view]->id]);
-		return;**/
+        foreach($segments as &$segment)
+        {
+            $segment = str_replace(':', '-', $segment);
+        }
+		return $segments;
 	}
 
+    /**
+     * Parse the component part of a SEF URL
+     *
+     * @param JComponentRouter $router Component router object
+     * @param array $segments component path elements of the URL
+     * @param array $vars associative array of unSEFed URL
+     */
 	public static function parseComponentSEF($router, $segments, $vars)
 	{
 		$views = $router->getViews();
 		$menus = JFactory::getApplication()->getMenu();
 		$active = $menus->getActive();
 		$cview = $views[$active->query['view']]->children;
-		if(isset($views[$active->query['view']]->layouts)) {
-			$layouts = $views[$active->query['view']]->layouts;
-		} else {
-			$layouts = false;
-		}
+
+        $vars = array_merge($active->query, $vars);
+
 		$nestable = false;
 		foreach ($segments as $segment) {
 			$found = false;
-			if(is_array($layouts)) {
-				foreach($layouts as $layout => $title) {
-					if($title == $segment) {
-						$vars['layout'] = $layout;
-						$found = true;
-						break;
-					}
-				}
-				if($found) {
-					continue;
-				}
-			}
-			list($id, $alias) = explode('-', $segment, 2);
+
+			@list($id, $alias) = explode('-', $segment, 2);
 			for($i = 0; $i < count($cview); $i++) {
 				$view = $cview[$i];
 				if(isset($view->id) && (int) $id > 0) {
@@ -462,10 +451,18 @@ class plgSystemRouter extends JPlugin
 					if(isset($view->parent->id) && isset($vars[$view->parent->id])) {
 						$vars[$view->parent_id] = $vars[$view->parent->id];
 					}
-					$vars[$view->id] = $id;
+
+                    if($alias)
+                    {
+                        $vars[$view->id] = $id.':'.$alias;
+                    } else {
+                        $vars[$view->id] = $id;
+                    }
+
 
 				} elseif($view->title == $segment) {
 					$vars['view'] = $view->name;
+
 					$found = true;
 					break;
 				}

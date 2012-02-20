@@ -72,19 +72,14 @@ class JComponentRouter implements JComponentRouterInterface
 			if (isset($item->query['view']))
 			{
 				$view = $item->query['view'];
-				if (isset($item->query['layout'])) {
-					$layout = $item->query['layout'];
-				} else {
-					$layout = 'default';
+
+				if (!isset($this->lookup[$view])) {
+					$this->lookup[$view] = array();
 				}
-				$key = $view.':'.$layout;
-				if (!isset($this->lookup[$key])) {
-					$this->lookup[$key] = array();
-				}
-				if ($views[$key]->id && isset($item->query[$views[$key]->id])) {
-					$this->lookup[$key][$item->query[$views[$key]->id]] = $item->id;
+				if ($views[$view]->id && isset($item->query[$views[$view]->id])) {
+					$this->lookup[$view][$item->query[$views[$view]->id]] = $item->id;
 				} else {
-					$this->lookup[$key] = $item->id;
+					$this->lookup[$view] = $item->id;
 				}
 			}
 		}
@@ -92,6 +87,7 @@ class JComponentRouter implements JComponentRouterInterface
 
 	/**
 	 * Register the views of a component
+     * Please notice that different URLs for different layouts are not supported yet
 	 *
 	 * @param string $name Internal name of the view. Has to be unique for the component
 	 * @param string $view Identifier of the view
@@ -111,8 +107,6 @@ class JComponentRouter implements JComponentRouterInterface
 		$viewobj->view = $view;
 		$viewobj->name = $name;
 		$viewobj->id = $id;
-		$layouts = (array) $layouts;
-		$layout = array_shift($layouts);
 
 		if($parent) {
 			foreach($this->views as $key => $par) {
@@ -128,20 +122,15 @@ class JComponentRouter implements JComponentRouterInterface
 			$viewobj->parent = false;
 			$viewobj->path = array();
 		}
-		$viewobj->path[] = $view.':'.$layout;
+		$viewobj->path[] = $view;
 		$viewobj->child_id = false;
 		$viewobj->parent_id = $parent_id;
 		if($parent_id) {
 			$this->views[$parkey]->child_id = $parent_id;
 		}
 		$viewobj->nestable = $nestable;
-		$viewobj->layout = $layout;
-		$viewobj->layouts = $layouts;
 
-		$this->views[$view.':'.$layout] = $viewobj;
-		foreach($layouts as $additional) {
-			$this->views[$view.':'.$additional] = $viewobj;
-		}
+		$this->views[$view] = $viewobj;
 	}
 
 	/**
@@ -171,12 +160,7 @@ class JComponentRouter implements JComponentRouterInterface
 		$id = false;
 		if(isset($query['view'])) {
 			$view = $query['view'];
-			if(isset($query['layout'])) {
-				$layout = $query['layout'];
-			} else {
-				$layout = 'default';
-			}
-			$viewobj = $views[$view.':'.$layout];
+			$viewobj = $views[$view];
 		}
 		if(isset($viewobj)) {
 			$path = array_reverse($viewobj->path);
