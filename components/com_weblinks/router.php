@@ -12,8 +12,9 @@ defined('_JEXEC') or die;
 /**
  * Weblinks Router
  *
- *
- *
+ * @package     Joomla.Site
+ * @subpackage  com_weblinks
+ * @since       1.6
  */
 class WeblinksRouter extends JComponentRouter
 {

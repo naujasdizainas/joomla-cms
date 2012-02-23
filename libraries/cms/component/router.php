@@ -89,17 +89,17 @@ class JComponentRouter implements JComponentRouterInterface
 	 * Register the views of a component
      * Please notice that different URLs for different layouts are not supported yet
 	 *
-	 * @param string $name Internal name of the view. Has to be unique for the component
-	 * @param string $view Identifier of the view
-	 * @param string $id Identifier of the ID variable used to identify the primary content item of this view
-	 * @param string $parent Internal name of the parent view
-	 * @param string $parent_id Identifier of the ID variable used to identify the content item of the parent view
-	 * @param bool $nestable Is this view nestable?
-	 * @param string $layouts Layout to use for this view by default, can also be an array of layout names
+	 * @param string  $name       Internal name of the view. Has to be unique for the component
+	 * @param string  $view       Identifier of the view
+	 * @param string  $id         Identifier of the ID variable used to identify the primary content item of this view
+	 * @param string  $parent     Internal name of the parent view
+	 * @param string  $parent_id  Identifier of the ID variable used to identify the content item of the parent view
+	 * @param bool    $nestable   Is this view nestable?
+	 * @param string  $layouts    Layout to use for this view by default, can also be an array of layout names
 	 *
 	 * @return void
 	 *
-	 * @since 11.3
+	 * @since 3.0
 	 */
 	function register($name, $view, $id = false, $parent = false, $parent_id = false, $nestable = false, $layouts = 'default')
 	{
@@ -108,9 +108,10 @@ class JComponentRouter implements JComponentRouterInterface
 		$viewobj->name = $name;
 		$viewobj->id = $id;
 
-		if($parent) {
-			foreach($this->views as $key => $par) {
-				if($par->name == $parent) {
+		if ($parent) {
+			foreach ($this->views as $key => $par)
+			{
+				if ($par->name == $parent) {
 					$parkey = $key;
 					break;
 				}
@@ -125,7 +126,7 @@ class JComponentRouter implements JComponentRouterInterface
 		$viewobj->path[] = $view;
 		$viewobj->child_id = false;
 		$viewobj->parent_id = $parent_id;
-		if($parent_id) {
+		if ($parent_id) {
 			$this->views[$parkey]->child_id = $parent_id;
 		}
 		$viewobj->nestable = $nestable;
@@ -136,9 +137,9 @@ class JComponentRouter implements JComponentRouterInterface
 	/**
 	 * Return an array of registered view objects
 	 *
-	 * @return array Array of registered view objects
+	 * @return  array  Array of registered view objects
 	 *
-	 * @since 11.3
+	 * @since 3.0
 	 */
 	function getViews()
 	{
@@ -158,25 +159,26 @@ class JComponentRouter implements JComponentRouterInterface
 		$views = $this->getViews();
 		$result = array();
 		$id = false;
-		if(isset($query['view'])) {
+		if (isset($query['view'])) {
 			$view = $query['view'];
 			$viewobj = $views[$view];
 		}
-		if(isset($viewobj)) {
+		if (isset($viewobj)) {
 			$path = array_reverse($viewobj->path);
 
 			$start = true;
-			foreach($path as $element) {
+			foreach ($path as $element)
+			{
 				$view = $views[$element];
-				if($start) {
+				if ($start) {
 					$id = $view->id;
 					$start = false;
 				} else {
 					$id = $view->child_id;
 				}
-				if($id && isset($query[$id])) {
+				if ($id && isset($query[$id])) {
 					$result[$element] = array($query[$id]);
-					if($view->nestable) {
+					if ($view->nestable) {
 						$nestable = call_user_func_array(array($this, 'get'.ucfirst($view->view)), array($query[$id]));
 						if($nestable) {
 							$result[$element] = array_reverse($nestable->getPath());
@@ -193,7 +195,7 @@ class JComponentRouter implements JComponentRouterInterface
 	/**
 	 * Add a number of router rules to the object
 	 *
-	 * @param array $rules Associative multi-dimensional array of callbacks
+	 * @param array  $rules  Associative multi-dimensional array of callbacks
 	 *
 	 * @return void
 	 *
@@ -201,10 +203,12 @@ class JComponentRouter implements JComponentRouterInterface
 	 */
 	function setRules($rules)
 	{
-		foreach($rules['build'] as $rule) {
+		foreach ($rules['build'] as $rule)
+		{
 			$this->attachBuildRule($rule);
 		}
-		foreach($rules['parse'] as $rule) {
+		foreach ($rules['parse'] as $rule)
+		{
 			$this->attachParseRule($rule);
 		}
 	}
@@ -219,7 +223,7 @@ class JComponentRouter implements JComponentRouterInterface
 	 */
 	public function attachBuildRule($callback, $position = 'last')
 	{
-		if($position == 'last')	{
+		if ($position == 'last') {
 			$this->buildrules[] = $callback;
 		} elseif ($position == 'first') {
 			array_unshift($this->buildrules, $callback);
@@ -229,10 +233,10 @@ class JComponentRouter implements JComponentRouterInterface
 	/**
 	 * Attach a parse rule
 	 *
-	 * @param	callback	The function to be called.
-	 * @param	position	The position where this
-	 * 						function is supposed to be executed.
-	 * 						Valid values: 'first', 'last'
+	 * @param  $callback  The function to be called.
+	 * @param  $position  The position where this
+	 * 					  function is supposed to be executed.
+	 * 					  Valid values: 'first', 'last'
 	 */
 	public function attachParseRule($callback, $position = 'last')
 	{
@@ -282,7 +286,7 @@ class JComponentRouter implements JComponentRouterInterface
 	 *
 	 * @return string Name of the router
 	 *
-	 * @since 11.3
+	 * @since 3.0
 	 */
 	function getName()
 	{
@@ -306,7 +310,7 @@ class JComponentRouter implements JComponentRouterInterface
 	 *
 	 * @return JCategoryNode Category identified by $id
 	 *
-	 * @since 11.3
+	 * @since 3.0
 	 */
 	function getCategory($id)
 	{
@@ -324,11 +328,11 @@ class JComponentRouter implements JComponentRouterInterface
 	 *
 	 * @return void
 	 *
-	 * @since 11.3
+	 * @since 3.0
 	 */
 	public function findItemid($crouter, $query, $segments)
 	{
-		if(isset($query['Itemid'])) {
+		if (isset($query['Itemid'])) {
 			return $query;
 		}
 

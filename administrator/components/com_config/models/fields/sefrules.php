@@ -16,7 +16,7 @@ JFormHelper::loadFieldClass('checkboxes');
  *
  * @package		Joomla.Framework
  * @subpackage	Form
- * @since		1.6
+ * @since		3.0
  */
 class JFormFieldSEFRules extends JFormFieldCheckboxes
 {
@@ -24,7 +24,7 @@ class JFormFieldSEFRules extends JFormFieldCheckboxes
 	 * The form field type.
 	 *
 	 * @var		string
-	 * @since	1.6
+	 * @since	3.0
 	 */
 	protected $type = 'SEF Rules';
 
@@ -32,7 +32,7 @@ class JFormFieldSEFRules extends JFormFieldCheckboxes
 	 * Method to get the field options.
 	 *
 	 * @return	array	The field option objects.
-	 * @since	1.6
+	 * @since	3.0
 	 */
 	protected function getOptions()
 	{

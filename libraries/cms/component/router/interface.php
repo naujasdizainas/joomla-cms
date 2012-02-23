@@ -14,24 +14,29 @@ defined('JPATH_PLATFORM') or die;
  *
  * @package     Joomla.Libraries
  * @subpackage  Component
- * @since       X.X
+ * @since		3.0
  */
-interface JComponentRouterInterface {
+interface JComponentRouterInterface
+{
 	/**
 	 * Build method for URLs
 	 *
-	 * @param array $query Array of query elements
+	 * @param   array  $query  Array of query elements
 	 *
-	 * @return array Array of URL segments
+	 * @return  array  Array of URL segments
+	 *
+	 * @since   3.0
 	 */
 	function build(&$query);
 
 	/**
 	 * Parse method for URLs
 	 *
-	 * @param array $segments Array of URL string-segments
+	 * @param   array  $segments  Array of URL string-segments
 	 *
-	 * @return array Associative array of query values
+	 * @return  array  Associative array of query values
+	 *
+	 * @since   3.0
 	 */
 	function parse(&$segments);
 }
