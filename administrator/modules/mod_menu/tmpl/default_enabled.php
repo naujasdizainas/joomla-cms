@@ -41,8 +41,9 @@ if ($user->authorise('core.admin'))
 
 $chm = $user->authorise('core.admin', 'com_checkin');
 $cam = $user->authorise('core.manage', 'com_cache');
+$ctm = $user->authorise('core.edit.state');
 
-if ($chm || $cam )
+if ($chm || $cam || $ctm)
 {
 
 	if ($chm)
@@ -53,6 +54,10 @@ if ($chm || $cam )
 	{
 		$menu->addChild(new JMenuNode(JText::_('MOD_MENU_CLEAR_CACHE'), 'index.php?option=com_cache', 'class:clear'));
 		$menu->addChild(new JMenuNode(JText::_('MOD_MENU_PURGE_EXPIRED_CACHE'), 'index.php?option=com_cache&view=purge', 'class:purge'));
+	}
+	if ($ctm)
+	{
+		$menu->addChild(new JMenuNode(JText::_('MOD_MENU_TRASH'), 'index.php?option=com_trash', 'class:trash'));
 	}
 
 }
