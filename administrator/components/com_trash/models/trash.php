@@ -98,7 +98,7 @@ class TrashModelTrash extends JModelList
 
 				$fields = $db->getTableColumns($tn);
 
-				if (!(isset($fields['published'])) || !(isset($fields['state'])))
+				if (!(isset($fields['published'])) && !(isset($fields['state'])))
 				{
 					unset($tables[$i]);
 					continue;
