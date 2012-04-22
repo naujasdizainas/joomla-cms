@@ -79,7 +79,7 @@ class TrashModelTrash extends JModelList
 			$tables = $db->getTableList();
 
 			// Some tables don't fit into this context; skip them
-			$skippedGenericTables = array('#__extensions');
+			$skippedGenericTables = array('#__extensions', '#__finder_filters', '#__finder_links', '#__finder_taxonomy');
 
 			// We need to put the table prefix on our skipped array
 			$skippedPrefixTables = array();
