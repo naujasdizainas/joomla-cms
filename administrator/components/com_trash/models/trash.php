@@ -78,6 +78,17 @@ class TrashModelTrash extends JModelList
 			$query = $db->getQuery(true);
 			$tables = $db->getTableList();
 
+			// Some tables don't fit into this context; skip them
+			$skippedGenericTables = array('#__extensions');
+
+			// We need to put the table prefix on our skipped array
+			$skippedPrefixTables = array();
+			foreach ($skippedGenericTables as $skipped)
+			{
+				$table = $db->replacePrefix($skipped);
+				$skippedPrefixTables[] = $table;
+			}
+
 			// This array will hold the table name as key and trashed item count as value
 			$results = array();
 
@@ -90,6 +101,7 @@ class TrashModelTrash extends JModelList
 					continue;
 				}
 
+				// If the user specified a filter, then ignore tables not matching the filter
 				if ($this->getState('filter.search') && stripos($tn, $this->getState('filter.search')) === false)
 				{
 					unset($tables[$i]);
@@ -98,6 +110,7 @@ class TrashModelTrash extends JModelList
 
 				$fields = $db->getTableColumns($tn);
 
+				// If the table doesn't have a published or state field, ignore it
 				if (!(isset($fields['published'])) && !(isset($fields['state'])))
 				{
 					unset($tables[$i]);
@@ -106,6 +119,13 @@ class TrashModelTrash extends JModelList
 			}
 			foreach ($tables as $tn)
 			{
+				// Check if the table is in our skipped array
+				if (in_array($tn, $skippedPrefixTables))
+				{
+					continue;
+				}
+
+				// Get the table's fields
 				$fields = $db->getTableColumns($tn);
 				$query->clear();
 				$query->select('COUNT(*)');
@@ -117,7 +137,7 @@ class TrashModelTrash extends JModelList
 					$query->where($db->quoteName('published') . ' = -2');
 				}
 				// Handle tables where 'state' is the status column and the table name isn't #__contact_details due to having both columns
-				elseif (isset($fields['state']) && $tn != '#__contact_details')
+				elseif (isset($fields['state']) && $tn != $db->replacePrefix('#__contact_details'))
 				{
 					$query->where($db->quoteName('state') . ' = -2');
 				}
