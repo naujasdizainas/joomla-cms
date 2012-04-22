@@ -6,7 +6,7 @@
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		3.0
  */
- 
+
 // no direct access
 defined('_JEXEC') or die;
 
@@ -21,7 +21,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/template.css');
 <!DOCTYPE html>
 <html>
 <head>
-	<?php 
+	<?php
 
     // Detecting Active Variables
     $option = JRequest::getCmd('option', '');
@@ -35,8 +35,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/template.css');
     else:
     $fullWidth = 0;
     endif;
-    $document =& JFactory::getDocument();
-    
+
     // Adjusting content width
     if ((!JRequest::getInt('hidemainmenu')) && $this->countModules('right')) :
     	$span = "span6";
