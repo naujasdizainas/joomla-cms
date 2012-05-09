@@ -202,7 +202,7 @@ final class JSite extends JApplication
 			JPluginHelper::importPlugin('system');
 			$this->triggerEvent('onAfterDispatch');
 		}
-		// Mop up any uncaught exceptions.
+			// Mop up any uncaught exceptions.
 		catch (Exception $e)
 		{
 			$code = $e->getCode();
@@ -285,7 +285,6 @@ final class JSite extends JApplication
 	 */
 	public function login($credentials, $options = array())
 	{
-		// Set the application login entry point
 		if (!array_key_exists('entry_url', $options))
 		{
 			$options['entry_url'] = JURI::base().'index.php?option=com_users&task=user.login';
