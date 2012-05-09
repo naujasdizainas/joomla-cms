@@ -18,7 +18,7 @@ jimport('joomla.environment.uri');
  * @package     Joomla.Site
  * @subpackage  Application
  */
-final class JSite extends JApplication
+final class JSiteNot extends JApplication
 {
 	/**
 	 * Currently active template
