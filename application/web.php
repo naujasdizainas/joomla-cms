@@ -548,6 +548,58 @@ final class SiteApplicationWeb extends JApplicationCms
 	}
 
 	/**
+	 * Login authentication function
+	 *
+	 * @param   array  $credentials  Array('username' => string, 'password' => string)
+	 * @param   array  $options      Array('remember' => boolean)
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   3.0
+	 */
+	public function login($credentials, $options = array())
+	{
+		// Set the application login entry point
+		if (!array_key_exists('entry_url', $options))
+		{
+			$options['entry_url'] = JURI::base() . 'index.php?option=com_users&task=user.login';
+		}
+
+		// Set the access control action to check.
+		$options['action'] = 'core.login.site';
+
+		return parent::login($credentials, $options);
+	}
+
+	/**
+	 * Redirect to another URL.
+	 *
+	 * Optionally enqueues a message in the system message queue (which will be displayed
+	 * the next time a page is loaded) using the enqueueMessage method. If the headers have
+	 * not been sent the redirect will be accomplished using a "301 Moved Permanently"
+	 * code in the header pointing to the new location. If the headers have already been
+	 * sent this will be accomplished using a JavaScript statement.
+	 *
+	 * @param   string   $url         The URL to redirect to. Can only be http/https URL
+	 * @param   string   $msg         An optional message to display on redirect.
+	 * @param   string   $msgType     An optional message type. Defaults to message.
+	 * @param   boolean  $moved       True if the page is 301 Permanently Moved, otherwise 303 See Other is assumed.
+	 * @param   boolean  $persistMsg  True if the enqueued messages are passed to the redirection
+	 *
+	 * @return  void  Calls exit().
+	 *
+	 * @since   3.0
+	 */
+	public function redirect($url, $msg='', $msgType='message', $moved = false, $persistMsg = true)
+	{
+		if (!$persistMsg)
+		{
+			$this->_messageQueue = array();
+		}
+
+		parent::redirect($url, $msg, $msgType, $moved);
+	}
+	/**
 	 * Route the application.
 	 *
 	 * Routing is the process of examining the request environment to determine which
@@ -639,36 +691,6 @@ final class SiteApplicationWeb extends JApplicationCms
  */
 
 	/**
-	 * Login authentication function
-	 *
-	 * @param	array	Array('username' => string, 'password' => string)
-	 * @param	array	Array('remember' => boolean)
-	 *
-	 * @see JApplication::login
-	 */
-	public function login($credentials, $options = array())
-	{
-		 // Set the application login entry point
-		if (!array_key_exists('entry_url', $options)) {
-			$options['entry_url'] = JURI::base().'index.php?option=com_users&task=user.login';
-		}
-
-		// Set the access control action to check.
-		$options['action'] = 'core.login.site';
-
-		return parent::login($credentials, $options);
-	}
-
-	/**
-	 * @deprecated 1.6	Use the authorise method instead.
-	 */
-	public function authorize($itemid)
-	{
-		JLog::add('JSite::authorize() is deprecated. Use JSite::authorise() instead.', JLog::WARNING, 'deprecated');
-		return $this->authorise($itemid);
-	}
-
-	/**
 	 * Get the application parameters
 	 *
 	 * @param	string	The component option
@@ -746,31 +768,5 @@ final class SiteApplicationWeb extends JApplicationCms
 		$old = $this->_detect_browser;
 		$this->_detect_browser=$state;
 		return $old;
-	}
-
-	/**
-	 * Redirect to another URL.
-	 *
-	 * Optionally enqueues a message in the system message queue (which will be displayed
-	 * the next time a page is loaded) using the enqueueMessage method. If the headers have
-	 * not been sent the redirect will be accomplished using a "301 Moved Permanently"
-	 * code in the header pointing to the new location. If the headers have already been
-	 * sent this will be accomplished using a JavaScript statement.
-	 *
-	 * @param	string	The URL to redirect to. Can only be http/https URL
-	 * @param	string	An optional message to display on redirect.
-	 * @param	string  An optional message type.
-	 * @param	boolean	True if the page is 301 Permanently Moved, otherwise 303 See Other is assumed.
-	 * @param	boolean	True if the enqueued messages are passed to the redirection, false else.
-	 * @return	none; calls exit().
-	 * @since	1.5
-	 * @see		JApplication::enqueueMessage()
-	 */
-	public function redirect($url, $msg='', $msgType='message', $moved = false, $persistMsg = true)
-	{
-		if (!$persistMsg) {
-			$this->_messageQueue = array();
-		}
-		parent::redirect($url, $msg, $msgType, $moved);
 	}
 }
