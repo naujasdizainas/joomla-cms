@@ -187,20 +187,20 @@ final class SiteApplicationWeb extends JApplicationCms
 		// Initialise the application
 		$this->initialiseApp();
 
-		// Mark afterIntialise in the profiler.
-		JDEBUG ? $_PROFILER->mark('afterInitialise') : null;
+		// Mark afterInitialise in the profiler.
+		JDEBUG ? $this->profiler->mark('afterInitialise') : null;
 
 		// Route the application
 		$this->route();
 
 		// Mark afterRoute in the profiler.
-		JDEBUG ? $_PROFILER->mark('afterRoute') : null;
+		JDEBUG ? $this->profiler->mark('afterRoute') : null;
 
 		// Dispatch the application
 		$this->dispatch();
 
 		// Mark afterDispatch in the profiler.
-		JDEBUG ? $_PROFILER->mark('afterDispatch') : null;
+		JDEBUG ? $this->profiler->mark('afterDispatch') : null;
 	}
 
 	/**
@@ -687,6 +687,9 @@ final class SiteApplicationWeb extends JApplicationCms
 
 		// Render the document.
 		$this->setBody($document->render($caching, $params));
+
+		// Mark afterRender in the profiler.
+		JDEBUG ? $this->profiler->mark('afterRender') : null;
 	}
 
 /**

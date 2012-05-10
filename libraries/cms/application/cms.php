@@ -56,6 +56,14 @@ class JApplicationCms extends JApplicationWeb
 	protected $_name = null;
 
 	/**
+	 * The profiler instance
+	 *
+	 * @var    JProfiler
+	 * @since  3.0
+	 */
+	protected $profiler = null;
+
+	/**
 	 * Class constructor.
 	 *
 	 * @param   mixed  $input   An optional argument to provide dependency injection for the application's
@@ -77,6 +85,12 @@ class JApplicationCms extends JApplicationWeb
 
 		// Load and set the dispatcher
 		$this->loadDispatcher();
+
+		// If JDEBUG is defined, load the profiler instance
+		if (JDEBUG)
+		{
+			$this->profiler = JProfiler::getInstance('Application');
+		}
 	}
 
 	/**
