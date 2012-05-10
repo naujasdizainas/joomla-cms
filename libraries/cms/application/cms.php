@@ -63,7 +63,8 @@ class JApplicationCms extends JApplicationWeb
 	 *
 	 * @return  void
 	 *
-	 * @since   11.1
+	 * @since   3.0
+	 * @deprecated  4.0
 	 */
 	public function checkSession()
 	{
@@ -165,8 +166,7 @@ class JApplicationCms extends JApplicationWeb
 	 */
 	public function getCfg($varname, $default = null)
 	{
-		$config = JFactory::getConfig();
-		return $config->get('' . $varname, $default);
+		return $this->config->get('' . $varname, $default);
 	}
 
 	/**
@@ -365,13 +365,13 @@ class JApplicationCms extends JApplicationWeb
 	 */
 	protected function initialiseApp($options = array())
 	{
-		// Set the language in the class.
-		$config = JFactory::getConfig();
+		// Set the configuration in the API.
+		$this->config = JFactory::getConfig();
 
 		// Check that we were given a language in the array (since by default may be blank).
 		if (isset($options['language']))
 		{
-			$config->set('language', $options['language']);
+			$this->config->set('language', $options['language']);
 		}
 
 		// Set user specific editor.
@@ -386,10 +386,10 @@ class JApplicationCms extends JApplicationWeb
 			}
 		}
 
-		$config->set('editor', $editor);
+		$this->config->set('editor', $editor);
 
 		// Register the global dispatcher
-		$this->dispatcher = JEventDispatcher::getInstance();
+		$this->dispatcher = $this->loadDispatcher();
 
 		// Trigger the onAfterInitialise event.
 		JPluginHelper::importPlugin('system');

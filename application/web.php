@@ -98,12 +98,11 @@ final class SiteApplicationWeb extends JApplicationCms
 				$component = $this->input->getCmd('option', null);
 			}
 
-			// Set the class document object
-			$this->document	= JFactory::getDocument();
+			// Load the document to the API
+			$this->loadDocument();
 
 			// Set up the params
-			$document	= $this->document;
-			$user		= JFactory::getUser();
+			$document	= $this->getDocument();
 			$router		= self::getRouter();
 			$params		= $this->getParams();
 
@@ -111,7 +110,7 @@ final class SiteApplicationWeb extends JApplicationCms
 			{
 				case 'html':
 					// Get language
-					$lang_code = JFactory::getLanguage()->getTag();
+					$lang_code = $this->getLanguage()->getTag();
 					$languages = JLanguageHelper::getLanguages('lang_code');
 
 					// Set metadata
@@ -256,7 +255,7 @@ final class SiteApplicationWeb extends JApplicationCms
 			$menu = $menus->getActive();
 
 			// Get language
-			$lang_code = JFactory::getLanguage()->getTag();
+			$lang_code = $this->getLanguage()->getTag();
 			$languages = JLanguageHelper::getLanguages('lang_code');
 
 			$title = $this->config->get('sitename');
@@ -377,7 +376,7 @@ final class SiteApplicationWeb extends JApplicationCms
 		$cache = JFactory::getCache('com_templates', '');
 		if ($this->_language_filter)
 		{
-			$tag = JFactory::getLanguage()->getTag();
+			$tag = $this->getLanguage()->getTag();
 		}
 		else
 		{
@@ -530,8 +529,11 @@ final class SiteApplicationWeb extends JApplicationCms
 		// Execute the parent initialiseApp method.
 		parent::initialiseApp($options);
 
+		// Load the language to the API
+		$this->loadLanguage();
+
 		// Load Library language
-		$lang = JFactory::getLanguage();
+		$lang = $this->getLanguage();
 
 		/*
 		 * Try the lib_joomla file in the current language (without allowing the loading of the file in the default language)
@@ -631,7 +633,7 @@ final class SiteApplicationWeb extends JApplicationCms
 	 */
 	protected function render()
 	{
-		$document	= JFactory::getDocument();
+		$document	= $this->getDocument();
 		$user		= JFactory::getUser();
 
 		// Get the format to render
@@ -661,12 +663,13 @@ final class SiteApplicationWeb extends JApplicationCms
 					$file = 'offline';
 					JResponse::setHeader('Status', '503 Service Temporarily Unavailable', 'true');
 				}
-				if (!is_dir(JPATH_THEMES . '/' . $template->template) && !$this->getCfg('offline')) {
+				if (!is_dir(JPATH_THEMES . '/' . $template->template) && !$this->getCfg('offline'))
+				{
 					$file = 'component';
 				}
 				$params = array(
 					'template'	=> $template->template,
-					'file'		=> $file.'.php',
+					'file'		=> $file . '.php',
 					'directory'	=> JPATH_THEMES,
 					'params'	=> $template->params
 				);
