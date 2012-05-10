@@ -18,8 +18,5 @@ JDEBUG ? $_PROFILER->mark('afterLoad') : null;
 // Get the site application
 $app = JApplicationWeb::getInstance('SiteApplicationWeb');
 
-// Register the application's dispatcher
-$app->set('dispatcher', $app->loadDispatcher());
-
 // Execute the application
 $app->execute();

@@ -56,6 +56,30 @@ class JApplicationCms extends JApplicationWeb
 	protected $_name = null;
 
 	/**
+	 * Class constructor.
+	 *
+	 * @param   mixed  $input   An optional argument to provide dependency injection for the application's
+	 *                          input object.  If the argument is a JInput object that object will become
+	 *                          the application's input object, otherwise a default input object is created.
+	 * @param   mixed  $config  An optional argument to provide dependency injection for the application's
+	 *                          config object.  If the argument is a JRegistry object that object will become
+	 *                          the application's config object, otherwise a default config object is created.
+	 * @param   mixed  $client  An optional argument to provide dependency injection for the application's
+	 *                          client object.  If the argument is a JApplicationWebClient object that object will become
+	 *                          the application's client object, otherwise a default client object is created.
+	 *
+	 * @since   3.0
+	 * @deprecated  4.0
+	 */
+	public function __construct(JInput $input = null, JRegistry $config = null, JApplicationWebClient $client = null)
+	{
+		parent::__construct();
+
+		// Load and set the dispatcher
+		$this->loadDispatcher();
+	}
+
+	/**
 	 * Checks the user session.
 	 *
 	 * If the session record doesn't exist, initialise it.
@@ -387,12 +411,6 @@ class JApplicationCms extends JApplicationWeb
 		}
 
 		$this->config->set('editor', $editor);
-
-		// Register the global dispatcher if not already
-		if (is_null($this->dispatcher))
-		{
-			$this->dispatcher = $this->loadDispatcher();
-		}
 
 		// Trigger the onAfterInitialise event.
 		JPluginHelper::importPlugin('system');
