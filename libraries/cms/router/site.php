@@ -142,7 +142,7 @@ class JRouterSite extends JRouter
 	{
 		$vars	= array();
 		$app	= JFactory::getApplication();
-		$menu	= $app->getMenu(true);
+		$menu	= $app->getMenu();
 
 		// Handle an empty URL (special case)
 		if (!$uri->getVar('Itemid') && !$uri->getVar('option'))
@@ -199,7 +199,7 @@ class JRouterSite extends JRouter
 	{
 		$vars	= array();
 		$app	= JFactory::getApplication();
-		$menu	= $app->getMenu(true);
+		$menu	= $app->getMenu();
 		$route	= $uri->getPath();
 
 		// Get the variables from the uri

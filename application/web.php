@@ -17,32 +17,8 @@ defined('_JEXEC') or die;
  * @subpackage  Application
  * @since       3.0
  */
-final class SiteApplicationWeb extends JApplicationWeb
+final class SiteApplicationWeb extends JApplicationCms
 {
-	/**
-	 * The scope of the application.
-	 *
-	 * @var    string
-	 * @since  3.0
-	 */
-	public $scope = null;
-
-	/**
-	 * The client identifier.
-	 *
-	 * @var    integer
-	 * @since  3.0
-	 */
-	protected $_clientId = null;
-
-	/**
-	 * The application message queue.
-	 *
-	 * @var    array
-	 * @since  3.0
-	 */
-	protected $_messageQueue = array();
-
 	/**
 	 * Currently active template
 	 *
@@ -203,6 +179,9 @@ final class SiteApplicationWeb extends JApplicationWeb
 		// Register the application to JFactory
 		JFactory::$application = $this;
 
+		// Register the application name
+		$this->_name = 'site';
+
 		// Register the client ID
 		$this->_clientId = 0;
 
@@ -226,77 +205,20 @@ final class SiteApplicationWeb extends JApplicationWeb
 	}
 
 	/**
-	 * Gets a configuration value.
+	 * Return a reference to the JMenu object.
 	 *
-	 * @param   string  $varname  The name of the value to get.
-	 * @param   string  $default  Default value to return
+	 * @param   string  $name     The name of the application/client.
+	 * @param   array   $options  An optional associative array of configuration settings.
 	 *
-	 * @return  mixed  The user state.
-	 *
-	 * @note    Present to maintain CMS B/C
-	 * @since   3.0
-	 */
-	public function getCfg($varname, $default = null)
-	{
-		$config = JFactory::getConfig();
-		return $config->get('' . $varname, $default);
-	}
-
-	/**
-	 * Gets the client id of the current running application.
-	 *
-	 * @return  integer  A client identifier.
-	 *
-	 * @note    Present to maintain CMS B/C
-	 * @since   3.0
-	 */
-	public function getClientId()
-	{
-		return $this->_clientId;
-	}
-
-	/**
-	 * Returns the application JMenu object.
-	 *
-	 * @return  JMenu
+	 * @return  JMenu  JMenu object.
 	 *
 	 * @since   3.0
 	 */
-	public function getMenu()
+	public function getMenu($name = 'site', $options = array())
 	{
-		$menu = JMenu::getInstance('site', array());
-
-		if ($menu instanceof Exception)
-		{
-			return null;
-		}
+		$menu = parent::getMenu($name, $options);
 
 		return $menu;
-	}
-
-	/**
-	 * Get the system message queue.
-	 *
-	 * @return  array  The system message queue.
-	 *
-	 * @since   3.0
-	 */
-	public function getMessageQueue()
-	{
-		// For empty queue, if messages exists in the session, enqueue them.
-		if (!count($this->_messageQueue))
-		{
-			$session = JFactory::getSession();
-			$sessionQueue = $session->get('application.queue');
-
-			if (count($sessionQueue))
-			{
-				$this->_messageQueue = $sessionQueue;
-				$session->set('application.queue', null);
-			}
-		}
-
-		return $this->_messageQueue;
 	}
 
 	/**
@@ -377,21 +299,16 @@ final class SiteApplicationWeb extends JApplicationWeb
 	/**
 	 * Return a reference to the JPathway object.
 	 *
-	 * @param   array  $options  An optional associative array of configuration settings.
+	 * @param   string  $name     The name of the application.
+	 * @param   array   $options  An optional associative array of configuration settings.
 	 *
-	 * @return  JPathway
+	 * @return  JPathway  A JPathway object
 	 *
 	 * @since   3.0
 	 */
-	public function getPathway(array $options = array())
+	public function getPathway($name = null, $options = array())
 	{
-		$options = array();
-		$pathway = JPathway::getInstance('site', $options);
-
-		if ($pathway instanceof Exception)
-		{
-			return null;
-		}
+		$pathway = parent::getPathway('site', $options);
 
 		return $pathway;
 	}
@@ -399,23 +316,19 @@ final class SiteApplicationWeb extends JApplicationWeb
 	/**
 	 * Return a reference to the JRouter object.
 	 *
-	 * @param   array  $options  An optional associative array of configuration settings.
+	 * @param   string  $name     The name of the application.
+	 * @param   array   $options  An optional associative array of configuration settings.
 	 *
 	 * @return	JRouter
 	 * @since	3.0
 	 */
-	public static function getRouter(array $options = array())
+	public static function getRouter($name = 'site', array $options = array())
 	{
 		jimport('joomla.application.router');
 
 		$config = JFactory::getConfig();
 		$options['mode'] = $config->get('sef');
-		$router = JRouter::getInstance('site', $options);
-
-		if ($router instanceof Exception)
-		{
-			return null;
-		}
+		$router = parent::getRouter($name, $options);
 
 		return $router;
 	}
@@ -532,66 +445,15 @@ final class SiteApplicationWeb extends JApplicationWeb
 	}
 
 	/**
-	 * Gets a user state.
-	 *
-	 * @param   string  $key      The path of the state.
-	 * @param   mixed   $default  Optional default value, returned if the internal value is null.
-	 *
-	 * @return  mixed  The user state or null.
-	 *
-	 * @since   3.0
-	 */
-	public function getUserState($key, $default = null)
-	{
-		$session = JFactory::getSession();
-		$registry = $session->get('registry');
-
-		if (!is_null($registry))
-		{
-			return $registry->get($key, $default);
-		}
-
-		return $default;
-	}
-
-	/**
-	 * Gets the value of a user state variable.
-	 *
-	 * @param   string  $key      The key of the user state variable.
-	 * @param   string  $request  The name of the variable passed in a request.
-	 * @param   string  $default  The default value for the variable if not found. Optional.
-	 * @param   string  $type     Filter for the variable, for valid values see {@link JFilterInput::clean()}. Optional.
-	 *
-	 * @return  The request user state.
-	 *
-	 * @since   3.0
-	 */
-	public function getUserStateFromRequest($key, $request, $default = null, $type = 'none')
-	{
-		$cur_state = $this->getUserState($key, $default);
-		$new_state = $this->input->get($request, null, $type);
-
-		// Save the new value only if it was set in this request.
-		if ($new_state !== null)
-		{
-			$this->setUserState($key, $new_state);
-		}
-		else
-		{
-			$new_state = $cur_state;
-		}
-
-		return $new_state;
-	}
-
-	/**
 	 * Initialise the application.
+	 *
+	 * @param   array  $options  An optional associative array of configuration settings.
 	 *
 	 * @return  void
 	 *
 	 * @since   3.0
 	 */
-	protected function initialiseApp()
+	protected function initialiseApp($options = array())
 	{
 		// If a language was specified it has priority, otherwise use user or default language settings
 		JPluginHelper::importPlugin('system', 'languagefilter');
@@ -665,22 +527,8 @@ final class SiteApplicationWeb extends JApplicationWeb
 			}
 		}
 
-		// Set the language to the config
-		$this->config->set('language', $options['language']);
-
-		// Set user specific editor.
-		$user = JFactory::getUser();
-		$editor = $user->getParam('editor', $this->config->get('editor'));
-		if (!JPluginHelper::isEnabled('editors', $editor))
-		{
-			$editor = $this->config->get('editor');
-			if (!JPluginHelper::isEnabled('editors', $editor))
-			{
-				$editor = 'none';
-			}
-		}
-
-		$this->config->set('editor', $editor);
+		// Execute the parent initialiseApp method.
+		parent::initialiseApp($options);
 
 		// Load Library language
 		$lang = JFactory::getLanguage();
@@ -700,30 +548,6 @@ final class SiteApplicationWeb extends JApplicationWeb
 	}
 
 	/**
-	 * Is admin interface?
-	 *
-	 * @return  boolean  True if this application is administrator.
-	 *
-	 * @since   11.1
-	 */
-	public function isAdmin()
-	{
-		return ($this->_clientId == 1);
-	}
-
-	/**
-	 * Is site interface?
-	 *
-	 * @return  boolean  True if this application is site.
-	 *
-	 * @since   11.1
-	 */
-	public function isSite()
-	{
-		return ($this->_clientId == 0);
-	}
-
-	/**
 	 * Route the application.
 	 *
 	 * Routing is the process of examining the request environment to determine which
@@ -733,24 +557,12 @@ final class SiteApplicationWeb extends JApplicationWeb
 	 *
 	 * @return  void
 	 *
-	 * @since   11.1
+	 * @since   3.0
 	 */
 	protected function route()
 	{
-		// Get the full request URI.
-		$uri = clone JURI::getInstance();
-
-		$router = $this->getRouter();
-		$result = $router->parse($uri);
-
-		foreach ($result as $key => $value)
-		{
-			$this->input->def($key, $value);
-		}
-
-		// Trigger the onAfterRoute event.
-		JPluginHelper::importPlugin('system');
-		$this->triggerEvent('onAfterRoute');
+		// Execute the parent method
+		parent::route();
 
 		$Itemid = $this->input->getInt('Itemid', null);
 		$this->authorise($Itemid);
@@ -763,7 +575,7 @@ final class SiteApplicationWeb extends JApplicationWeb
 	 *
 	 * @return  void
 	 *
-	 * @since   11.3
+	 * @since   3.0
 	 */
 	protected function render()
 	{
@@ -820,29 +632,6 @@ final class SiteApplicationWeb extends JApplicationWeb
 
 		// Render the document.
 		$this->setBody($document->render($caching, $params));
-	}
-
-	/**
-	 * Sets the value of a user state variable.
-	 *
-	 * @param   string  $key    The path of the state.
-	 * @param   string  $value  The value of the variable.
-	 *
-	 * @return  mixed  The previous state, if one existed.
-	 *
-	 * @since   3.0
-	 */
-	public function setUserState($key, $value)
-	{
-		$session = JFactory::getSession();
-		$registry = $session->get('registry');
-
-		if (!is_null($registry))
-		{
-			return $registry->set($key, $value);
-		}
-
-		return null;
 	}
 
 /**
