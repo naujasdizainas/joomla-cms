@@ -130,6 +130,13 @@ final class SiteApplicationWeb extends JApplicationCms
 						$document->setBase(htmlspecialchars(JURI::current()));
 					}
 
+					// Get the template
+					$template = $this->getTemplate(true);
+
+					// Store the template and its params to the config
+					$this->set('theme', $template->template);
+					$this->set('themeParams', $template->params);
+
 					break;
 
 				case 'feed':
@@ -335,13 +342,13 @@ final class SiteApplicationWeb extends JApplicationCms
 	/**
 	 * Gets the name of the current template.
 	 *
-	 * @param   array  $params  An optional associative array of configuration settings
+	 * @param   boolean  $params  True to return the template parameters
 	 *
 	 * @return  string  The name of the template.
 	 *
 	 * @since   3.0
 	 */
-	public function getTemplate($params = array())
+	public function getTemplate($params = false)
 	{
 		if (is_object($this->template))
 		{
@@ -620,76 +627,6 @@ final class SiteApplicationWeb extends JApplicationCms
 
 		$Itemid = $this->input->getInt('Itemid', null);
 		$this->authorise($Itemid);
-	}
-
-	/**
-	 * Rendering is the process of pushing the document buffers into the template
-	 * placeholders, retrieving data from the document and pushing it into
-	 * the application response buffer.
-	 *
-	 * @return  void
-	 *
-	 * @since   3.0
-	 */
-	protected function render()
-	{
-		$document	= $this->getDocument();
-		$user		= JFactory::getUser();
-
-		// Get the format to render
-		$format = $document->getType();
-
-		switch ($format)
-		{
-			case 'feed':
-				$params = array();
-				break;
-
-			case 'html':
-			default:
-				$template	= $this->getTemplate(true);
-				$file		= $this->input->getCmd('tmpl', 'index');
-
-				if (!$this->getCfg('offline') && ($file == 'offline'))
-				{
-					$file = 'index';
-				}
-
-				if ($this->getCfg('offline') && !$user->authorise('core.login.offline'))
-				{
-					$uri		= JFactory::getURI();
-					$return		= (string)$uri;
-					$this->setUserState('users.login.form.data', array( 'return' => $return ) );
-					$file = 'offline';
-					JResponse::setHeader('Status', '503 Service Temporarily Unavailable', 'true');
-				}
-				if (!is_dir(JPATH_THEMES . '/' . $template->template) && !$this->getCfg('offline'))
-				{
-					$file = 'component';
-				}
-				$params = array(
-					'template'	=> $template->template,
-					'file'		=> $file . '.php',
-					'directory'	=> JPATH_THEMES,
-					'params'	=> $template->params
-				);
-				break;
-		}
-
-		// Parse the document.
-		$document->parse($params);
-
-		$caching = false;
-		if ($this->getCfg('caching') && $this->getCfg('caching', 2) == 2 && !$user->get('id'))
-		{
-			$caching = true;
-		}
-
-		// Render the document.
-		$this->setBody($document->render($caching, $params));
-
-		// Mark afterRender in the profiler.
-		JDEBUG ? $this->profiler->mark('afterRender') : null;
 	}
 
 /**
