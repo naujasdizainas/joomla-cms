@@ -388,8 +388,11 @@ class JApplicationCms extends JApplicationWeb
 
 		$this->config->set('editor', $editor);
 
-		// Register the global dispatcher
-		$this->dispatcher = $this->loadDispatcher();
+		// Register the global dispatcher if not already
+		if (is_null($this->dispatcher))
+		{
+			$this->dispatcher = $this->loadDispatcher();
+		}
 
 		// Trigger the onAfterInitialise event.
 		JPluginHelper::importPlugin('system');

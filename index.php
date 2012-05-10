@@ -15,5 +15,11 @@ require_once __DIR__ . '/application/bootstrap.php';
 // Mark afterLoad in the profiler.
 JDEBUG ? $_PROFILER->mark('afterLoad') : null;
 
-// Execute the Application
-JApplicationWeb::getInstance('SiteApplicationWeb')->execute();
+// Get the site application
+$app = JApplicationWeb::getInstance('SiteApplicationWeb');
+
+// Register the application's dispatcher
+$app->set('dispatcher', $app->loadDispatcher());
+
+// Execute the application
+$app->execute();
