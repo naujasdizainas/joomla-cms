@@ -77,7 +77,6 @@ class JApplicationCms extends JApplicationWeb
 	 *                          the application's client object, otherwise a default client object is created.
 	 *
 	 * @since   3.0
-	 * @deprecated  4.0
 	 */
 	public function __construct(JInput $input = null, JRegistry $config = null, JApplicationWebClient $client = null)
 	{
@@ -91,6 +90,18 @@ class JApplicationCms extends JApplicationWeb
 		{
 			$this->profiler = JProfiler::getInstance('Application');
 		}
+
+		// Enable sessions by default.
+		if (is_null($this->config->get('session')))
+		{
+			$this->config->set('session', true);
+		}
+
+		// Create the session if a session name is passed.
+		if ($this->config->get('session') !== false)
+		{
+			$this->createSession(JApplication::getHash($this->config->get('session_name')));
+		}
 	}
 
 	/**
@@ -102,7 +113,6 @@ class JApplicationCms extends JApplicationWeb
 	 * @return  void
 	 *
 	 * @since   3.0
-	 * @deprecated  4.0
 	 */
 	public function checkSession()
 	{
@@ -161,6 +171,75 @@ class JApplicationCms extends JApplicationWeb
 				$session->set('user', new JUser);
 			}
 		}
+	}
+
+	/**
+	 * Create the user session.
+	 *
+	 * Old sessions are flushed based on the configuration value for the cookie
+	 * lifetime. If an existing session, then the last access time is updated.
+	 * If a new session, a session id is generated and a record is created in
+	 * the #__sessions table.
+	 *
+	 * @param   string  $name  The session's name.
+	 *
+	 * @return  JSession  JSession on success. May call exit() on database error.
+	 *
+	 * @since   3.0
+	 */
+	protected function createSession($name)
+	{
+		$options = array();
+		$options['name'] = $name;
+
+		switch ($this->_clientId)
+		{
+			case 0:
+				if ($this->getCfg('force_ssl') == 2)
+				{
+					$options['force_ssl'] = true;
+				}
+				break;
+
+			case 1:
+				if ($this->getCfg('force_ssl') >= 1)
+				{
+					$options['force_ssl'] = true;
+				}
+				break;
+		}
+
+		$session = JFactory::getSession($options);
+		$session->initialise($this->input);
+		$session->start();
+
+		// TODO: At some point we need to get away from having session data always in the db.
+
+		$db = JFactory::getDBO();
+
+		// Remove expired sessions from the database.
+		$time = time();
+		if ($time % 2)
+		{
+			// The modulus introduces a little entropy, making the flushing less accurate
+			// but fires the query less than half the time.
+			$query = $db->getQuery(true);
+			$query->delete($query->qn('#__session'))
+				->where($query->qn('time') . ' < ' . $query->q((int) ($time - $session->getExpire())));
+
+			$db->setQuery($query);
+			$db->execute();
+		}
+
+		// Check to see the the session already exists.
+		$handler = $this->getCfg('session_handler');
+		if (($handler != 'database' && ($time % 2 || $session->isNew()))
+			|| ($handler == 'database' && $session->isNew()))
+		{
+			$this->checkSession();
+		}
+
+		return $session;
 	}
 
 	/**
@@ -588,7 +667,6 @@ class JApplicationCms extends JApplicationWeb
 	 * @return  boolean  True on success
 	 *
 	 * @since   3.0
-	 * @deprecated  4.0
 	 */
 	public function logout($userid = null, $options = array())
 	{
