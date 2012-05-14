@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  *
  * @package     Joomla.Administrator
  */
-abstract class JToolBarHelper
+abstract class JToolbarHelper
 {
 	/**
 	 * Title cell.

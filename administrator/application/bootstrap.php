@@ -26,7 +26,9 @@ require_once JPATH_BASE . '/application/framework.php';
 
 // Require the deprecated helpers
 require_once JPATH_BASE . '/application/submenu.php';
-require_once JPATH_BASE . '/application/toolbar.php';
+
+// Register the new location for the toolbar helper
+JLoader::register('JToolBarHelper', JPATH_PLATFORM . '/cms/toolbar/helper.php');
 
 // Register the Administrator application
 JLoader::registerPrefix('Administrator', JPATH_ADMINISTRATOR);
