@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  * @package  Joomla.Administrator
  * @since    1.5
  */
-class JAdministrator extends JApplication
+class JAdministratorNot extends JApplication
 {
 	/**
 	 * Class constructor

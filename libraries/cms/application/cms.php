@@ -64,6 +64,14 @@ class JApplicationCms extends JApplicationWeb
 	protected $profiler = null;
 
 	/**
+	 * Currently active template
+	 *
+	 * @var    object
+	 * @since  3.0
+	 */
+	protected $template = null;
+
+	/**
 	 * Class constructor.
 	 *
 	 * @param   mixed  $input   An optional argument to provide dependency injection for the application's

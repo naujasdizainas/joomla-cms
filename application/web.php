@@ -20,14 +20,6 @@ defined('_JEXEC') or die;
 final class SiteApplicationWeb extends JApplicationCms
 {
 	/**
-	 * Currently active template
-	 *
-	 * @var    object
-	 * @since  3.0
-	 */
-	private $template = null;
-
-	/**
 	 * Option to filter by language
 	 *
 	 * @var    boolean
@@ -42,6 +34,36 @@ final class SiteApplicationWeb extends JApplicationCms
 	 * @since  3.0
 	 */
 	private $_detect_browser = false;
+
+	/**
+	 * Class constructor.
+	 *
+	 * @param   mixed  $input   An optional argument to provide dependency injection for the application's
+	 *                          input object.  If the argument is a JInput object that object will become
+	 *                          the application's input object, otherwise a default input object is created.
+	 * @param   mixed  $config  An optional argument to provide dependency injection for the application's
+	 *                          config object.  If the argument is a JRegistry object that object will become
+	 *                          the application's config object, otherwise a default config object is created.
+	 * @param   mixed  $client  An optional argument to provide dependency injection for the application's
+	 *                          client object.  If the argument is a JApplicationWebClient object that object will become
+	 *                          the application's client object, otherwise a default client object is created.
+	 *
+	 * @since   3.0
+	 * @deprecated  4.0
+	 */
+	public function __construct(JInput $input = null, JRegistry $config = null, JApplicationWebClient $client = null)
+	{
+		parent::__construct();
+
+		// Register the application to JFactory
+		JFactory::$application = $this;
+
+		// Register the application name
+		$this->_name = 'site';
+
+		// Register the client ID
+		$this->_clientId = 0;
+	}
 
 	/**
 	 * Check if the user can access the application
@@ -185,15 +207,6 @@ final class SiteApplicationWeb extends JApplicationCms
 	 */
 	protected function doExecute()
 	{
-		// Register the application to JFactory
-		JFactory::$application = $this;
-
-		// Register the application name
-		$this->_name = 'site';
-
-		// Register the client ID
-		$this->_clientId = 0;
-
 		// Initialise the application
 		$this->initialiseApp();
 
@@ -556,10 +569,6 @@ final class SiteApplicationWeb extends JApplicationCms
 		|| $lang->load('lib_joomla', JPATH_ADMINISTRATOR, null, false, false)
 		|| $lang->load('lib_joomla', JPATH_SITE, null, true)
 		|| $lang->load('lib_joomla', JPATH_ADMINISTRATOR, null, true);
-
-		// Trigger the onAfterInitialise event.
-		JPluginHelper::importPlugin('system');
-		$this->triggerEvent('onAfterInitialise');
 	}
 
 	/**
