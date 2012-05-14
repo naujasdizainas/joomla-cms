@@ -100,7 +100,10 @@ class JApplicationCms extends JApplicationWeb
 		// Create the session if a session name is passed.
 		if ($this->config->get('session') !== false)
 		{
-			$this->createSession(JApplication::getHash($this->config->get('session_name')));
+			$this->loadSession();
+
+			// Register the session with JFactory
+			JFactory::$session = $this->getSession();
 		}
 	}
 
@@ -174,23 +177,29 @@ class JApplicationCms extends JApplicationWeb
 	}
 
 	/**
-	 * Create the user session.
+	 * Allows the application to load a custom or default session.
 	 *
-	 * Old sessions are flushed based on the configuration value for the cookie
-	 * lifetime. If an existing session, then the last access time is updated.
-	 * If a new session, a session id is generated and a record is created in
-	 * the #__sessions table.
+	 * The logic and options for creating this object are adequately generic for default cases
+	 * but for many applications it will make sense to override this method and create a session,
+	 * if required, based on more specific needs.
 	 *
-	 * @param   string  $name  The session's name.
+	 * @param   JSession  $session  An optional session object. If omitted, the session is created.
 	 *
-	 * @return  JSession  JSession on success. May call exit() on database error.
+	 * @return  JApplicationWeb This method is chainable.
 	 *
 	 * @since   3.0
 	 */
-	protected function createSession($name)
+	public function loadSession(JSession $session = null)
 	{
+		if ($session !== null)
+		{
+			$this->session = $session;
+
+			return $this;
+		}
+
 		$options = array();
-		$options['name'] = $name;
+		$options['name'] = JApplication::getHash($this->config->get('session_name'));
 
 		switch ($this->_clientId)
 		{
@@ -239,7 +248,10 @@ class JApplicationCms extends JApplicationWeb
 			$this->checkSession();
 		}
 
-		return $session;
+		// Set the session object.
+		$this->session = $session;
+
+		return $this;
 	}
 
 	/**

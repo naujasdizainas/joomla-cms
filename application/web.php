@@ -106,6 +106,9 @@ final class SiteApplicationWeb extends JApplicationCms
 			$router		= self::getRouter();
 			$params		= $this->getParams();
 
+			// Register the document object with JFactory
+			JFactory::$document = $document;
+
 			switch ($document->getType())
 			{
 				case 'html':
@@ -541,6 +544,9 @@ final class SiteApplicationWeb extends JApplicationCms
 
 		// Load Library language
 		$lang = $this->getLanguage();
+
+		// Register the language object with JFactory
+		JFactory::$language = $lang;
 
 		/*
 		 * Try the lib_joomla file in the current language (without allowing the loading of the file in the default language)
