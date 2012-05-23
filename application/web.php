@@ -49,7 +49,6 @@ final class SiteApplicationWeb extends JApplicationCms
 	 *                          the application's client object, otherwise a default client object is created.
 	 *
 	 * @since   3.0
-	 * @deprecated  4.0
 	 */
 	public function __construct(JInput $input = null, JRegistry $config = null, JApplicationWebClient $client = null)
 	{
