@@ -94,7 +94,7 @@ class JApplicationCms extends JApplicationWeb
 		$this->loadDispatcher();
 
 		// If JDEBUG is defined, load the profiler instance
-		if (JDEBUG)
+		if (defined('JDEBUG') && JDEBUG)
 		{
 			$this->profiler = JProfiler::getInstance('Application');
 		}

@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 $doc = JFactory::getDocument();
 
 // Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+JHtml::addIncludePath(JPATH_COMPONENT.'/helper/html');
 
 // Add Stylesheets
 $doc->addStyleSheet('../media/system/css/system.css');

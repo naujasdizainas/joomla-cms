@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  *
  * @package  Joomla.Installation
  */
-class JInstallation extends JApplication
+class JInstallationNot extends JApplication
 {
 	/**
 	* Class constructor

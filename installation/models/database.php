@@ -9,7 +9,6 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.file');
-require_once JPATH_INSTALLATION . '/helpers/database.php';
 
 /**
  * Database configuration model for the Joomla Core Installer.
