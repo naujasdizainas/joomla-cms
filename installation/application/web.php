@@ -59,7 +59,7 @@ final class InstallationApplicationWeb extends JApplicationCms
 	 *
 	 * @since   3.0
 	 */
-	public static function debugLanguage()
+	public function debugLanguage()
 	{
 		ob_start();
 		$lang = JFactory::getLanguage();
@@ -119,7 +119,7 @@ final class InstallationApplicationWeb extends JApplicationCms
 		}
 		echo '</pre>';
 		$debug = ob_get_clean();
-		JResponse::appendBody($debug);
+		$this->appendBody($debug);
 	}
 
 	/**
