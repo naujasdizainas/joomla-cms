@@ -95,7 +95,7 @@ final class SiteApplicationWeb extends JApplicationCms
 			}
 			else
 			{
-				JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+				$this->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
 			}
 		}
 	}
@@ -192,8 +192,7 @@ final class SiteApplicationWeb extends JApplicationCms
 		// Mop up any uncaught exceptions.
 		catch (Exception $e)
 		{
-			$code = $e->getCode();
-			JError::raiseError($code ? $code : 500, $e->getMessage());
+			$this->enqueueMessage($e->getMessage(), 'error');
 		}
 	}
 
@@ -448,7 +447,7 @@ final class SiteApplicationWeb extends JApplicationCms
 		// Fallback template
 		if (!file_exists(JPATH_THEMES . '/' . $template->template . '/index.php'))
 		{
-			JError::raiseWarning(0, JText::_('JERROR_ALERTNOTEMPLATE'));
+			$this->enqueueMessage(JText::_('JERROR_ALERTNOTEMPLATE'));
 			$template->template = 'beez_20';
 			if (!file_exists(JPATH_THEMES . '/beez_20/index.php'))
 			{

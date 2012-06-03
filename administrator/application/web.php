@@ -111,8 +111,7 @@ final class AdministratorApplicationWeb extends JApplicationCms
 		// Mop up any uncaught exceptions.
 		catch (Exception $e)
 		{
-			$code = $e->getCode();
-			JError::raiseError($code ? $code : 500, $e->getMessage());
+			$this->enqueueMessage($e->getMessage(), 'error');
 		}
 	}
 
@@ -509,12 +508,12 @@ final class AdministratorApplicationWeb extends JApplicationCms
 			&& (JFactory::getUser()->get('username') == $rootUser || JFactory::getUser()->id === (string) $rootUser)
 		)
 		{
-			JError::raiseNotice(
-				200,
+			$this->enqueueMessage(
 				JText::sprintf(
 					'JWARNING_REMOVE_ROOT_USER',
 					'index.php?option=com_config&task=application.removeroot&' . JSession::getFormToken() . '=1'
-				)
+				),
+				'notice'
 			);
 		}
 
