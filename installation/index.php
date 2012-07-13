@@ -62,6 +62,8 @@ require_once JPATH_LIBRARIES . '/import.legacy.php';
 // Botstrap the CMS libraries.
 require_once JPATH_LIBRARIES . '/cms.php';
 
+JLog::addLogger(array('text_file' => 'deprecated.php', 'text_file_path' => __DIR__), JLog::ALL, array('deprecated'));
+
 // Joomla library imports.
 jimport('joomla.environment.uri');
 jimport('joomla.utilities.arrayhelper');
