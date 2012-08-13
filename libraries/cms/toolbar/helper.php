@@ -1,18 +1,20 @@
 <?php
 /**
- * @package    Joomla.Administrator
+ * @package     Joomla.Libraries
+ * @subpackage  Toolbar
  *
- * @copyright  Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Utility class for the button bar.
  *
- * @package  Joomla.Administrator
- * @since    1.5
+ * @package     Joomla.Libraries
+ * @subpackage  Toolbar
+ * @since       1.5
  */
 abstract class JToolbarHelper
 {
@@ -576,29 +578,5 @@ abstract class JToolbarHelper
 
 		// Add a configuration button.
 		$bar->appendButton('Popup', 'options', $alt, 'index.php?option=com_config&amp;view=component&amp;component=' . $component . '&amp;path=' . $path . '&amp;tmpl=component', $width, $height, $top, $left, $onClose);
-	}
-}
-
-/**
- * Utility class for the submenu.
- *
- * @package  Joomla.Administrator
- * @since    1.5
- */
-abstract class JSubMenuHelper
-{
-	/**
-	 * Method to add a menu item to submenu.
-	 *
-	 * @param	string	$name	Name of the menu item.
-	 * @param	string	$link	URL of the menu item.
-	 * @param	bool	True if the item is active, false otherwise.
-	 *
-	 * @since    1.5
-	 */
-	public static function addEntry($name, $link = '', $active = false)
-	{
-		$menu = JToolbar::getInstance('submenu');
-		$menu->appendButton($name, $link, $active);
 	}
 }

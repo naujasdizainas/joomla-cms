@@ -43,3 +43,4 @@ if (array_key_exists('REQUEST_METHOD', $_SERVER))
 // @deprecated  4.0
 JLoader::register('JToolBar', JPATH_PLATFORM . '/cms/toolbar/toolbar.php');
 JLoader::register('JButton',  JPATH_PLATFORM . '/cms/toolbar/button.php');
+JLoader::register('JToolBarHelper', JPATH_PLATFORM . '/cms/toolbar/helper.php');
