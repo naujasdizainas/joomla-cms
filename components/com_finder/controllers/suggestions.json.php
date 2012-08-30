@@ -28,7 +28,7 @@ class FinderControllerSuggestions extends JControllerLegacy
 	 *
 	 * @since   2.5
 	 */
-	public function display($cachable = false, $urlparams = false)
+	public function display($cachable = false, $urlparams = array())
 	{
 		$return = array();
 

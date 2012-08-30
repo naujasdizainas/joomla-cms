@@ -374,11 +374,10 @@ class FinderIndexerQuery
 		}
 
 		// Sanitize the terms.
-		//@TODO: Should toInteger use $return?
 		$return = array_unique($results);
-		JArrayHelper::toInteger($results);
+		JArrayHelper::toInteger($return);
 
-		return $results;
+		return $return;
 	}
 
 	/**

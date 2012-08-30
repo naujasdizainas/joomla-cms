@@ -201,7 +201,14 @@ class PlgFinderCategories extends FinderIndexerAdapter
 				$item = $this->db->loadObject();
 
 				// Translate the state.
-				$temp = $this->translateState($value);
+				$state = null;
+
+				if ($item->parent_id != 1)
+				{
+					$state = $item->cat_state;
+				}
+
+				$temp = $this->translateState($value, $state);
 
 				// Update the item.
 				$this->change($pk, 'state', $temp);
@@ -373,10 +380,13 @@ class PlgFinderCategories extends FinderIndexerAdapter
 	protected function getStateQuery()
 	{
 		$sql = $this->db->getQuery(true);
-		$sql->select($this->db->quoteName('a.id'));
-		$sql->select($this->db->quoteName('a.published') . ' AS cat_state');
-		$sql->select($this->db->quoteName('a.access') . ' AS cat_access');
+		$sql->select('a.id, a.parent_id');
+		// Category and parent state
+		$sql->select('a.published AS state, c.published AS cat_state');
+		// Category and parent access levels
+		$sql->select('a.access AS access, c.access AS cat_access');
 		$sql->from($this->db->quoteName('#__categories') . ' AS a');
+		$sql->join('LEFT', '#__categories AS c ON c.id = a.parent_id');
 
 		return $sql;
 	}

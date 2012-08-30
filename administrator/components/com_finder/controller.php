@@ -53,7 +53,7 @@ class FinderController extends JControllerLegacy
 			return false;
 		}
 
-		parent::display();
+		parent::display($cachable, $urlparams);
 
 		return $this;
 	}

@@ -34,6 +34,6 @@ class FinderViewIndexer extends JViewLegacy
 		JHtml::_('script', 'com_finder/indexer.js', false, true);
 		JHtml::_('script', 'system/progressbar.js', true, true);
 
-		parent::display();
+		parent::display($tpl);
 	}
 }
