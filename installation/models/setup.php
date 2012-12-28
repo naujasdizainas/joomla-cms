@@ -21,7 +21,7 @@ class InstallationModelSetup extends JModelLegacy
 	 *
 	 * @return  array
 	 *
-	 * @since	3.0
+	 * @since   3.0
 	 */
 	public function getOptions()
 	{
@@ -34,7 +34,7 @@ class InstallationModelSetup extends JModelLegacy
 	/**
 	 * Store the current setup options in the session.
 	 *
-	 * @param   array   $options
+	 * @param   array  $options  The configuration options
 	 *
 	 * @return  array
 	 *
@@ -62,9 +62,11 @@ class InstallationModelSetup extends JModelLegacy
 	/**
 	 * Method to get the link form.
 	 *
+	 * @param   string  $view  The view to process
+	 *
 	 * @return  mixed  JForm object on success, false on failure.
 	 *
-	 * @since	3.0
+	 * @since   3.0
 	 */
 	public function getForm($view = null)
 	{
@@ -101,6 +103,7 @@ class InstallationModelSetup extends JModelLegacy
 	}
 
 	/**
+	 * Method to get the database connector options (unused?)
 	 *
 	 * @return  array
 	 *
@@ -148,7 +151,7 @@ class InstallationModelSetup extends JModelLegacy
 	/**
 	 * Generate a panel of language choices for the user to select their language
 	 *
-	 * @return  boolean True if successful
+	 * @return	boolean  True if successful
 	 *
 	 * @since	3.0
 	 */

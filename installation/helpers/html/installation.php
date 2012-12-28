@@ -25,7 +25,6 @@ class JHtmlInstallation
 	 */
 	public static function stepbar()
 	{
-
 		// Determine if the configuration file path is writable.
 		$path = JPATH_CONFIGURATION . '/configuration.php';
 		$useftp = (file_exists($path)) ? !is_writable($path) : !is_writable(JPATH_CONFIGURATION . '/');
@@ -33,6 +32,7 @@ class JHtmlInstallation
 		$tabs = array();
 		$tabs[] = 'site';
 		$tabs[] = 'database';
+
 		if ($useftp)
 		{
 			$tabs[] = 'ftp';
@@ -41,11 +41,13 @@ class JHtmlInstallation
 
 		$html = array();
 		$html[] = '<ul class="nav nav-tabs">';
+
 		foreach ($tabs as $tab)
 		{
-			$html[] = self::getTab($tab, $tabs);
+			$html[] = static::_getTab($tab, $tabs);
 		}
 		$html[] = '</ul>';
+
 		return implode('', $html);
 	}
 
@@ -58,7 +60,6 @@ class JHtmlInstallation
 	 */
 	public static function stepbarlanguages()
 	{
-
 		$tabs = array();
 		$tabs[] = 'languages';
 		$tabs[] = 'defaultlanguage';
@@ -66,9 +67,10 @@ class JHtmlInstallation
 
 		$html = array();
 		$html[] = '<ul class="nav nav-tabs">';
+
 		foreach ($tabs as $tab)
 		{
-			$html[] = self::getTab($tab, $tabs);
+			$html[] = static::_getTab($tab, $tabs);
 		}
 		$html[] = '</ul>';
 
@@ -76,18 +78,20 @@ class JHtmlInstallation
 	}
 
 	/**
-	 * @param   string  $id
-	 * @param   array   $tabs
+	 * Method to build the markup for the current tab
+	 *
+	 * @param   string  $id    The ID for the tab
+	 * @param   array   $tabs  The array of tabs
 	 *
 	 * @return  string  Markup for the tab
 	 *
 	 * @since   3.0
 	 */
-	private static function getTab($id, $tabs)
+	private static function _getTab($id, $tabs)
 	{
 		$input = JFactory::getApplication()->input;
-		$num   = self::getTabNumber($id, $tabs);
-		$view  = self::getTabNumber($input->getWord('view'), $tabs);
+		$num   = static::_getTabNumber($id, $tabs);
+		$view  = static::_getTabNumber($input->getWord('view'), $tabs);
 		$tab   = '<span class="badge">' . $num . '</span> ' . JText::_('INSTL_STEP_' . strtoupper($id) . '_LABEL');
 
 		if ($view + 1 == $num)
@@ -107,14 +111,16 @@ class JHtmlInstallation
 	}
 
 	/**
-	 * @param   string  $id
-	 * @param   array   $tabs
+	 * Method to get the step number of the current tab
 	 *
-	 * @return  int
+	 * @param   string  $id    The ID for the tab
+	 * @param   array   $tabs  The array of tabs
+	 *
+	 * @return  integer  The step number for the tab
 	 *
 	 * @since   3.0
 	 */
-	private static function getTabNumber($id, $tabs)
+	private static function _getTabNumber($id, $tabs)
 	{
 		$num = (int) array_search($id, $tabs);
 		$num++;

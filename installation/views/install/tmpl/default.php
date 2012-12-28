@@ -36,9 +36,11 @@ if ($this->options['summary_email'])
 				<?php
 					if ($task == 'email')
 					{
-						echo JText::sprintf('INSTL_INSTALLING_EMAIL', '<span class="label">'.$this->options['admin_email'].'</span>');
-					} else {
-						echo JText::_('INSTL_INSTALLING_'.strtoupper($task));
+						echo JText::sprintf('INSTL_INSTALLING_EMAIL', '<span class="label">' . $this->options['admin_email'] . '</span>');
+					}
+					else
+					{
+						echo JText::_('INSTL_INSTALLING_' . strtoupper($task));
 					}
 				?>
 			</td>

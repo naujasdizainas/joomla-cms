@@ -20,7 +20,13 @@ require_once JPATH_INSTALLATION . '/helpers/database.php';
  */
 class InstallationModelDatabase extends JModelLegacy
 {
-	static protected $userId = 0;
+	/**
+	 * The generated user ID
+	 *
+	 * @var    integer
+	 * @since  3.0
+	 */
+	protected static $userId = 0;
 
 	/**
 	 * Generates the user ID
@@ -40,17 +46,22 @@ class InstallationModelDatabase extends JModelLegacy
 			$randUserId = mt_rand(1, 1000);
 			$session->set('randUserId', $randUserId);
 		}
+
 		return $randUserId;
 	}
 
 	/**
+	 * Resets the user ID
+	 *
+	 * @return  void
+	 *
 	 * @since   3.0
 	 */
 	public static function resetRandUserId()
 	{
-		self::$userId = 0;
+		static::$userId = 0;
 		$session = JFactory::getSession();
-		$session->set('randUserId', self::$userId);
+		$session->set('randUserId', static::$userId);
 	}
 
 	/**
@@ -62,11 +73,12 @@ class InstallationModelDatabase extends JModelLegacy
 	 */
 	public static function getUserId()
 	{
-		if (!self::$userId)
+		if (!static::$userId)
 		{
-			self::$userId = self::generateRandUserId();
+			static::$userId = static::generateRandUserId();
 		}
-		return self::$userId;
+
+		return static::$userId;
 	}
 
 	/**
@@ -84,8 +96,8 @@ class InstallationModelDatabase extends JModelLegacy
 		$options = JArrayHelper::toObject($options);
 
 		// Load the back-end language files so that the DB error messages work
-		$lang 			= JFactory::getLanguage();
-		$currentLang 	= $lang->getTag();
+		$lang        = JFactory::getLanguage();
+		$currentLang = $lang->getTag();
 
 		// Load the selected language
 		if (JLanguage::exists($currentLang, JPATH_ADMINISTRATOR))
@@ -143,7 +155,9 @@ class InstallationModelDatabase extends JModelLegacy
 		// Get a database object.
 		try
 		{
-			return InstallationHelperDatabase::getDbo($options->db_type, $options->db_host, $options->db_user, $options->db_pass, $options->db_name, $options->db_prefix, $options->db_select);
+			return InstallationHelperDatabase::getDbo(
+				$options->db_type, $options->db_host, $options->db_user, $options->db_pass, $options->db_name, $options->db_prefix, $options->db_select
+			);
 		}
 		catch (RuntimeException $e)
 		{
@@ -153,12 +167,19 @@ class InstallationModelDatabase extends JModelLegacy
 	}
 
 	/**
+	 * Method to create the database
+	 *
+	 * @param   array  $options  The installation options
+	 *
+	 * @return  boolean  True on success
+	 *
 	 * @since   3.0
 	 */
 	public function createDatabase($options)
 	{
 		// Disable autoselect database before it's created
 		$tmpSelect = true;
+
 		if (isset($options['db_select']))
 		{
 			$tmpSelect = $options['db_select'];
@@ -175,6 +196,7 @@ class InstallationModelDatabase extends JModelLegacy
 
 		// Check database version.
 		$type = $options->db_type;
+
 		try
 		{
 			$db_version = $db->getVersion();
@@ -245,8 +267,8 @@ class InstallationModelDatabase extends JModelLegacy
 		}
 
 		$options = (array) $options;
-		// remove *_errors value
 
+		// Remove *_errors value
 		foreach ($options as $i => $option)
 		{
 			if (isset($i['1']) && $i['1'] == '*')
@@ -267,6 +289,12 @@ class InstallationModelDatabase extends JModelLegacy
 	}
 
 	/**
+	 * Method to process the pre-existing database during installation
+	 *
+	 * @param   array  $options  The installation options
+	 *
+	 * @return  boolean  True on success
+	 *
 	 * @since   3.0
 	 */
 	public function handleOldDatabase($options)
@@ -311,6 +339,12 @@ class InstallationModelDatabase extends JModelLegacy
 	}
 
 	/**
+	 * Method to create the database tables
+	 *
+	 * @param   array  $options  The installation options
+	 *
+	 * @return  boolean  True on success
+	 *
 	 * @since   3.0
 	 */
 	public function createTables($options)
@@ -347,6 +381,7 @@ class InstallationModelDatabase extends JModelLegacy
 		{
 			$schema = 'sql/' . $type . '/joomla.sql';
 		}
+
 		// Check if the schema is a valid file
 		if (!is_file($schema))
 		{
@@ -363,6 +398,7 @@ class InstallationModelDatabase extends JModelLegacy
 
 		// Attempt to update the table #__schema.
 		$pathPart = JPATH_ADMINISTRATOR . '/components/com_admin/sql/updates/';
+
 		if ($type == 'mysqli' || $type == 'mysql')
 		{
 			$pathPart .= 'mysql/';
@@ -383,6 +419,7 @@ class InstallationModelDatabase extends JModelLegacy
 			return false;
 		}
 		$version = '';
+
 		foreach ($files as $file)
 		{
 			if (version_compare($version, JFile::stripExt($file)) < 0)
@@ -418,6 +455,7 @@ class InstallationModelDatabase extends JModelLegacy
 		$db->setQuery($query);
 
 		$return = true;
+
 		try
 		{
 			$extensions = $db->loadObjectList();
@@ -430,6 +468,7 @@ class InstallationModelDatabase extends JModelLegacy
 
 		JFactory::$database = $db;
 		$installer = JInstaller::getInstance();
+
 		foreach ($extensions as $extension)
 		{
 			if (!$installer->refreshManifestCache($extension->extension_id))
@@ -452,6 +491,7 @@ class InstallationModelDatabase extends JModelLegacy
 		{
 			$dblocalise = 'sql/' . $type . '/localise.sql';
 		}
+
 		if (is_file($dblocalise))
 		{
 			if (!$this->populateDatabase($db, $dblocalise))
@@ -464,6 +504,7 @@ class InstallationModelDatabase extends JModelLegacy
 		// Handle default backend language setting. This feature is available for localized versions of Joomla.
 		$app = JFactory::getApplication();
 		$languages = $app->getLocaliseAdmin($db);
+
 		if (in_array($options->language, $languages['admin']) || in_array($options->language, $languages['site']))
 		{
 			// Build the language parameters for the language manager.
@@ -477,18 +518,19 @@ class InstallationModelDatabase extends JModelLegacy
 			{
 				$params['administrator'] = $options->language;
 			}
+
 			if (in_array($options->language, $languages['site']))
 			{
 				$params['site'] = $options->language;
 			}
 			$params = json_encode($params);
 
-				// Update the language settings in the language manager.
-				$query = $db->getQuery(true);
-				$query->update($db->quoteName('#__extensions'));
-				$query->set($db->quoteName('params') . ' = ' . $db->quote($params));
-				$query->where($db->quoteName('element') . ' = ' . $db->quote('com_languages'));
-				$db->setQuery($query);
+			// Update the language settings in the language manager.
+			$query = $db->getQuery(true);
+			$query->update($db->quoteName('#__extensions'));
+			$query->set($db->quoteName('params') . ' = ' . $db->quote($params));
+			$query->where($db->quoteName('element') . ' = ' . $db->quote('com_languages'));
+			$db->setQuery($query);
 
 			try
 			{
@@ -507,7 +549,7 @@ class InstallationModelDatabase extends JModelLegacy
 	/**
 	 * Method to install the sample data
 	 *
-	 * @param   array  $options
+	 * @param   array  $options  The installation options
 	 *
 	 * @return  boolean  True on success
 	 *
@@ -564,7 +606,7 @@ class InstallationModelDatabase extends JModelLegacy
 	/**
 	 * Method to update the user id of the sample data content to the new rand user id
 	 *
-	 * @param   JDatabaseDriver  $db  Database connector object $db*
+	 * @param   JDatabaseDriver  $db  Database connector object
 	 *
 	 * @return  void
 	 *
@@ -573,7 +615,7 @@ class InstallationModelDatabase extends JModelLegacy
 	protected function postInstallSampleData($db)
 	{
 		// Create the ID for the root user
-		$userId = self::getUserId();
+		$userId = static::getUserId();
 
 		// Update all created_by field of the tables with the random user id
 		// categories (created_user_id), contact_details, content, newsfeeds, weblinks
@@ -614,6 +656,7 @@ class InstallationModelDatabase extends JModelLegacy
 
 		// Get the tables in the database.
 		$tables = $db->getTableList();
+
 		if ($tables)
 		{
 			foreach ($tables as $table)
@@ -655,9 +698,9 @@ class InstallationModelDatabase extends JModelLegacy
 	/**
 	 * Method to create a new database.
 	 *
-	 * @param   JDatabaseDriver  $db       JDatabase object.
+	 * @param   JDatabaseDriver  $db       JDatabaseDriver object.
 	 * @param   JObject          $options  JObject coming from "initialise" function to pass user
-	 * 										and database name to database driver.
+	 *                                     and database name to database driver.
 	 * @param   boolean          $utf      True if the database supports the UTF-8 character set.
 	 *
 	 * @return  boolean  True on success.
@@ -698,6 +741,7 @@ class InstallationModelDatabase extends JModelLegacy
 
 		// Get the tables in the database.
 		$tables = $db->getTableList();
+
 		if ($tables)
 		{
 			foreach ($tables as $table)
@@ -725,7 +769,7 @@ class InstallationModelDatabase extends JModelLegacy
 	/**
 	 * Method to import a database schema from a file.
 	 *
-	 * @param   JDatabaseDriver  $db      JDatabase object.
+	 * @param   JDatabaseDriver  $db      JDatabaseDriver object.
 	 * @param   string           $schema  Path to the schema file.
 	 *
 	 * @return  boolean  True on success.
@@ -745,6 +789,7 @@ class InstallationModelDatabase extends JModelLegacy
 
 		// Get an array of queries from the schema and process them.
 		$queries = $this->_splitQueries($buffer);
+
 		foreach ($queries as $query)
 		{
 			// Trim any whitespace.
@@ -785,9 +830,6 @@ class InstallationModelDatabase extends JModelLegacy
 	{
 		// Run the create database query.
 		$db->setQuery($db->getAlterDbCharacterSet($name));
-			/*'ALTER DATABASE '.$db->quoteName($name).' CHARACTER' .
-			' SET `utf8`'
-		);*/
 
 		try
 		{
@@ -825,9 +867,10 @@ class InstallationModelDatabase extends JModelLegacy
 		// Remove PostgreSQL comment lines.
 		$sql = preg_replace("/\n\--[^\n]*/", '', "\n" . $sql);
 
-		// find function
+		// Find function
 		$funct = explode('CREATE OR REPLACE FUNCTION', $sql);
-		// save sql before function and parse it
+
+		// Save SQL before function and parse it
 		$sql = $funct[0];
 
 		// Parse the schema file to break up queries.
@@ -848,6 +891,7 @@ class InstallationModelDatabase extends JModelLegacy
 			{
 				$in_string = $sql[$i];
 			}
+
 			if (isset ($buffer[1]))
 			{
 				$buffer[0] = $buffer[1];
@@ -861,7 +905,7 @@ class InstallationModelDatabase extends JModelLegacy
 			$queries[] = $sql;
 		}
 
-		// add function part as is
+		// Add function part as is
 		for ($f = 1; $f < count($funct); $f++)
 		{
 			$queries[] = 'CREATE OR REPLACE FUNCTION ' . $funct[$f];

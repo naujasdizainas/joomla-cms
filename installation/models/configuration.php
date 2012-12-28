@@ -20,7 +20,11 @@ require_once JPATH_INSTALLATION . '/helpers/database.php';
 class InstallationModelConfiguration extends JModelLegacy
 {
 	/**
-	 * @return  boolean
+	 * Method to setup the configuration file
+	 *
+	 * @param   array  $options  The configuration options
+	 *
+	 * @return  boolean  True on success
 	 *
 	 * @since   3.0
 	 */
@@ -53,7 +57,7 @@ class InstallationModelConfiguration extends JModelLegacy
 	 *
 	 * @since   3.0
 	 */
-	function _createConfiguration($options)
+	private function _createConfiguration($options)
 	{
 		// Create a new registry to build the configuration options.
 		$registry = new JRegistry;
@@ -158,6 +162,7 @@ class InstallationModelConfiguration extends JModelLegacy
 		 * is not writable we need to use FTP
 		 */
 		$useFTP = false;
+
 		if ((file_exists($path) && !is_writable($path)) || (!file_exists($path) && !is_writable(dirname($path) . '/')))
 		{
 			$useFTP = true;
@@ -297,6 +302,7 @@ class InstallationModelConfiguration extends JModelLegacy
 		}
 
 		$db->setQuery($query);
+
 		try
 		{
 			$db->execute();
@@ -331,6 +337,7 @@ class InstallationModelConfiguration extends JModelLegacy
 		}
 
 		$db->setQuery($query);
+
 		try
 		{
 			$db->execute();

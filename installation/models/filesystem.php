@@ -43,6 +43,7 @@ class InstallationModelFtp extends JModelLegacy
 			$this->setError($options->get('ftp_host') . ':' . $options->get('ftp_port') . ' ' . JText::_('INSTL_FTP_NOCONNECT'));
 			return false;
 		}
+
 		if (!$ftp->login($options->get('ftp_user'), $options->get('ftp_pass')))
 		{
 			$this->setError(JText::_('INSTL_FTP_NOLOGIN'));
@@ -51,6 +52,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Get the current working directory from the FTP server.
 		$cwd = $ftp->pwd();
+
 		if ($cwd === false)
 		{
 			$this->setError(JText::_('INSTL_FTP_NOPWD'));
@@ -60,6 +62,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Get a list of folders in the current working directory.
 		$cwdFolders = $ftp->listDetails(null, 'folders');
+
 		if ($cwdFolders === false || count($cwdFolders) == 0)
 		{
 			$this->setError(JText::_('INSTL_FTP_NODIRECTORYLISTING'));
@@ -75,6 +78,7 @@ class InstallationModelFtp extends JModelLegacy
 		// Check to see if Joomla is installed at the FTP current working directory.
 		$paths = array();
 		$known = array('administrator', 'components', 'installation', 'language', 'libraries', 'plugins');
+
 		if (count(array_diff($known, $cwdFolders)) == 0)
 		{
 			$paths[] = $cwd . '/';
@@ -83,9 +87,11 @@ class InstallationModelFtp extends JModelLegacy
 		// Search through the segments of JPATH_SITE looking for root possibilities.
 		$parts = explode(DIRECTORY_SEPARATOR, JPATH_SITE);
 		$tmp = '';
+
 		for ($i = count($parts) - 1; $i >= 0; $i--)
 		{
 			$tmp = '/' . $parts[$i] . $tmp;
+
 			if (in_array($parts[$i], $cwdFolders))
 			{
 				$paths[] = $cwd . $tmp;
@@ -95,11 +101,13 @@ class InstallationModelFtp extends JModelLegacy
 		// Check all possible paths for the real Joomla installation by comparing version files.
 		$rootPath = false;
 		$checkValue = file_get_contents(JPATH_LIBRARIES . '/cms/version/version.php');
+
 		foreach ($paths as $tmp)
 		{
 			$filePath = rtrim($tmp, '/') . '/libraries/cms/version/version.php';
 			$buffer = null;
-			@ $ftp->read($filePath, $buffer);
+			@$ftp->read($filePath, $buffer);
+
 			if ($buffer == $checkValue)
 			{
 				$rootPath = $tmp;
@@ -143,6 +151,7 @@ class InstallationModelFtp extends JModelLegacy
 			$this->setError(JText::_('INSTL_FTP_NOCONNECT'));
 			return false;
 		}
+
 		if (!$ftp->login($options->get('ftp_user'), $options->get('ftp_pass')))
 		{
 			$ftp->quit();
@@ -196,6 +205,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Verify valid root path, part one
 		$checkList = array('robots.txt', 'index.php');
+
 		if (count(array_diff($checkList, $rootList)))
 		{
 			$ftp->quit();
@@ -205,6 +215,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Verify RETR function
 		$buffer = null;
+
 		if ($ftp->read($root . '/libraries/cms/version/version.php', $buffer) === false)
 		{
 			$ftp->quit();
@@ -214,6 +225,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Verify valid root path, part two
 		$checkValue = file_get_contents(JPATH_ROOT . '/libraries/cms/version/version.php');
+
 		if ($buffer !== $checkValue)
 		{
 			$ftp->quit();
@@ -270,22 +282,27 @@ class InstallationModelFtp extends JModelLegacy
 		{
 			return false;
 		}
+
 		if (!mkdir(JPATH_ROOT . '/tmp/test', 0755))
 		{
 			return false;
 		}
+
 		if (!copy(JPATH_ROOT . '/tmp/index.html', JPATH_ROOT . 'tmp/test/index.html'))
 		{
 			return false;
 		}
+
 		if (!chmod(JPATH_ROOT . '/tmp/test/index.html', 0777))
 		{
 			return false;
 		}
+
 		if (!unlink(JPATH_ROOT . '/tmp/test/index.html'))
 		{
 			return false;
 		}
+
 		if (!rmdir(JPATH_ROOT . '/tmp/test'))
 		{
 			return false;
@@ -299,9 +316,9 @@ class InstallationModelFtp extends JModelLegacy
 	 *
 	 * @param   string  $user  Username of the ftp user to determine root for
 	 * @param   string  $pass  Password of the ftp user to determine root for
-	 * @param   string  $root
-	 * @param   string  $host
-	 * @param   string  $port
+	 * @param   string  $root  The root of the site
+	 * @param   string  $host  The host address
+	 * @param   string  $port  The port to connect on
 	 *
 	 * @return  mixed   Boolean true on success or JError object on fail
 	 *
@@ -371,6 +388,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Verify valid root path, part one
 		$checkList = array('CHANGELOG.php', 'COPYRIGHT.php', 'index.php', 'INSTALL.php', 'LICENSE.php');
+
 		if (count(array_diff($checkList, $rootList)))
 		{
 			$ftp->quit();
@@ -380,6 +398,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Verify RETR function
 		$buffer = null;
+
 		if ($ftp->read($root . '/libraries/cms/version/version.php', $buffer) === false)
 		{
 			$ftp->quit();
@@ -389,6 +408,7 @@ class InstallationModelFtp extends JModelLegacy
 
 		// Verify valid root path, part two
 		$checkValue = file_get_contents(JPATH_ROOT . '/libraries/cms/version/version.php');
+
 		if ($buffer !== $checkValue)
 		{
 			$ftp->quit();
@@ -434,8 +454,8 @@ class InstallationModelFtp extends JModelLegacy
 	/**
 	 * Set default folder permissions
 	 *
-	 * @param   string  $folder
-	 * @param   string  $options
+	 * @param   string  $folder   The folder to set permissions on
+	 * @param   string  $options  The installation options
 	 *
 	 * @return  boolean  True on success
 	 *
@@ -521,9 +541,16 @@ class InstallationModelFtp extends JModelLegacy
 	}
 
 	/**
+	 * Unused method?
+	 *
+	 * @param   string  $path  Path to change mode on
+	 * @param   mixed   $mode  Octal value to change mode to, e.g. '0777', 0777 or 511 (string or integer)
+	 *
+	 * @return  boolean  True on success
+	 *
 	 * @since   3.0
 	 */
-	function _chmod($path, $mode)
+	public function _chmod($path, $mode)
 	{
 		$app = JFactory::getApplication();
 		$ret = false;

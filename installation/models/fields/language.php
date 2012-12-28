@@ -39,6 +39,7 @@ class JFormFieldLanguage extends JFormFieldList
 
 		// Detect the native language.
 		$native = JLanguageHelper::detectLanguage();
+
 		if (empty($native))
 		{
 			$native = 'en-GB';
@@ -46,6 +47,7 @@ class JFormFieldLanguage extends JFormFieldList
 
 		// Get a forced language if it exists.
 		$forced = $app->getLocalise();
+
 		if (!empty($forced['language']))
 		{
 			$native = $forced['language'];
@@ -54,6 +56,7 @@ class JFormFieldLanguage extends JFormFieldList
 		// If a language is already set in the session, use this instead
 		$model = JModelLegacy::getInstance('Setup', 'InstallationModel', array('dbo' => null));
 		$options = $model->getOptions();
+
 		if (isset($options['language']))
 		{
 			$native = $options['language'];
@@ -61,7 +64,8 @@ class JFormFieldLanguage extends JFormFieldList
 
 		// Get the list of available languages.
 		$options = JLanguageHelper::createLanguageList($native);
-		if (!$options || $options  instanceof Exception)
+
+		if (!$options || $options instanceof Exception)
 		{
 			$options = array();
 		}
@@ -83,7 +87,12 @@ class JFormFieldLanguage extends JFormFieldList
 	/**
 	 * Method to sort languages by name.
 	 *
-	 * @since	3.0
+	 * @param   string  $a  The first language
+	 * @param   string  $b  The second language
+	 *
+	 * @return  integer  The sorted languages
+	 *
+	 * @since   3.0
 	 */
 	protected function _sortLanguages($a, $b)
 	{
