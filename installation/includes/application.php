@@ -16,14 +16,16 @@ defined('_JEXEC') or die;
  * @package  Joomla.Installation
  * @since    1.5
  */
-class JInstallation extends JApplication
+final class JInstallation extends JApplication
 {
 	/**
-	* Class constructor
-	*
-	* @param   array  $config  An optional associative array of configuration settings.
-	*                          Recognized key values include 'clientId' (this list is not meant to be comprehensive).
-	*/
+	 * Class constructor
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *                          Recognized key values include 'clientId' (this list is not meant to be comprehensive).
+	 *
+	 * @since   1.5
+	 */
 	public function __construct(array $config = array())
 	{
 		$config['clientId'] = 2;
@@ -32,19 +34,19 @@ class JInstallation extends JApplication
 		$this->_createConfiguration('');
 
 		// Set the root in the URI based on the application name.
-		JURI::root(null, str_replace('/' . $this->getName(), '', JURI::base(true)));
+		JUri::root(null, str_replace('/' . $this->getName(), '', JUri::base(true)));
 	}
 
 	/**
 	 * Render the application
 	 *
 	 * @return  void
+	 *
+	 * @since   1.6
 	 */
 	public function render()
 	{
 		$document = JFactory::getDocument();
-		$config   = JFactory::getConfig();
-		$user     = JFactory::getUser();
 
 		switch ($document->getType())
 		{
@@ -90,6 +92,7 @@ class JInstallation extends JApplication
 
 		$data = $document->render(false, $params);
 		JResponse::setBody($data);
+
 		if (JFactory::getConfig()->get('debug_lang'))
 		{
 			$this->debugLanguage();
@@ -99,9 +102,11 @@ class JInstallation extends JApplication
 	/**
 	 * Initialise the application.
 	 *
-	 * @param   array  $options
+	 * @param   array  $options  The installation options
 	 *
 	 * @return  void
+	 *
+	 * @since   1.6
 	 */
 	public function initialise($options = array())
 	{
@@ -112,6 +117,7 @@ class JInstallation extends JApplication
 		if (empty($options['language']))
 		{
 			$requestLang = $this->input->get('lang');
+
 			if (!is_null($requestLang))
 			{
 				$options['language'] = $requestLang;
@@ -124,6 +130,7 @@ class JInstallation extends JApplication
 			$session = JFactory::getSession();
 
 			$setupOptions = $session->get('setup.options', array());
+
 			if (isset($setupOptions['language']) && $setupOptions['language'])
 			{
 				$options['language'] = $setupOptions['language'];
@@ -140,6 +147,7 @@ class JInstallation extends JApplication
 			else
 			{
 				$options['language'] = JLanguageHelper::detectLanguage();
+
 				if (empty($options['language']))
 				{
 					$options['language'] = 'en-GB';
@@ -161,7 +169,11 @@ class JInstallation extends JApplication
 	}
 
 	/**
+	 * Method to output the language debug information
+	 *
 	 * @return  void
+	 *
+	 * @since   1.6
 	 */
 	public static function debugLanguage()
 	{
@@ -198,6 +210,7 @@ class JInstallation extends JApplication
 				$guess = str_replace('_', ' ', $key);
 
 				$parts = explode(' ', $guess);
+
 				if (count($parts) > 1)
 				{
 					array_shift($parts);
@@ -231,7 +244,9 @@ class JInstallation extends JApplication
 	 * @param   array   $vars       Array of configuration values
 	 * @param   string  $namespace  The namespace
 	 *
-	 * @return  void
+	 * @return	void
+	 *
+	 * @since   1.5
 	 */
 	public function setCfg(array $vars = array(), $namespace = 'config')
 	{
@@ -239,9 +254,13 @@ class JInstallation extends JApplication
 	}
 
 	/**
-	 * Create the configuration registry
+	 * Create the configuration registry.
+	 *
+	 * @param   string  $file  The path to the configuration file
 	 *
 	 * @return  void
+	 *
+	 * @since   1.5
 	 */
 	public function _createConfiguration($file)
 	{
@@ -250,10 +269,14 @@ class JInstallation extends JApplication
 	}
 
 	/**
-	* Get the template
-	*
-	* @return  string  The template name
-	*/
+	 * Get the template data
+	 *
+	 * @param   boolean  $params  True to return the template with params, false for only the template name
+	 *
+	 * @return  mixed  The template name or the full template data object
+	 *
+	 * @since   1.6
+	 */
 	public function getTemplate($params = false)
 	{
 		if ((bool) $params)
@@ -261,8 +284,10 @@ class JInstallation extends JApplication
 			$template = new stdClass;
 			$template->template = 'template';
 			$template->params = new JRegistry;
+
 			return $template;
 		}
+
 		return 'template';
 	}
 
@@ -272,6 +297,8 @@ class JInstallation extends JApplication
 	 * @param   string  $name  The sessions name
 	 *
 	 * @return  JSession
+	 *
+	 * @since   1.6
 	 */
 	public function _createSession($name)
 	{
@@ -281,6 +308,7 @@ class JInstallation extends JApplication
 		$session = JFactory::getSession($options);
 		$session->initialise($this->input);
 		$session->start();
+
 		if (!$session->get('registry') instanceof JRegistry)
 		{
 			// Registry has been corrupted somehow
@@ -294,7 +322,9 @@ class JInstallation extends JApplication
 	 * Returns the language code and help url set in the localise.xml file.
 	 * Used for forcing a particular language in localised releases.
 	 *
-	 * @return  bool|array	False on failure, array on success.
+	 * @return	bool|array	False on failure, array on success.
+	 *
+	 * @since   1.6
 	 */
 	public function getLocalise()
 	{
@@ -325,9 +355,11 @@ class JInstallation extends JApplication
 	 * Returns the installed language files in the administrative and
 	 * front-end area.
 	 *
-	 * @param   boolean  $db
+	 * @param   mixed  $db  JDatabaseDriver object
 	 *
-	 * @return array Array with installed language packs in admin and site area
+	 * @return  array  Array with installed language packs in admin and site area
+	 *
+	 * @since   1.6
 	 */
 	public function getLocaliseAdmin($db = false)
 	{
@@ -353,6 +385,7 @@ class JInstallation extends JApplication
 			$query->where('type = ' . $db->quote('language'));
 			$db->setQuery($query);
 			$langs = $db->loadObjectList();
+
 			foreach ($langs as $lang)
 			{
 				switch ($lang->client_id)
@@ -392,5 +425,4 @@ class JInstallation extends JApplication
 	public function getMenu($name = null, $options = array())
 	{
 	}
-
 }

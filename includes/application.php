@@ -21,25 +21,35 @@ final class JSite extends JApplication
 {
 	/**
 	 * Currently active template
-	 * @var object
+	 *
+	 * @var    object
+	 * @since  1.5
 	 */
-	private $template = null;
+	private $_template = null;
 
 	/**
 	 * Option to filter by language
+	 *
+	 * @var    boolean
+	 * @since  1.6
 	 */
 	private $_language_filter = false;
 
 	/**
 	 * Option to detect language by the browser
+	 *
+	 * @var    boolean
+	 * @since  1.6
 	 */
 	private $_detect_browser = false;
 
 	/**
-	 * Class constructor
+	 * Class constructor.
 	 *
-	 * @param   array An optional associative array of configuration settings.
-	 * Recognized key values include 'clientId' (this list is not meant to be comprehensive).
+	 * @param   array  $config  A configuration array including optional elements such as session
+	 * session_name, clientId and others. This is not exhaustive.
+	 *
+	 * @since   1.5
 	 */
 	public function __construct($config = array())
 	{
@@ -50,7 +60,11 @@ final class JSite extends JApplication
 	/**
 	 * Initialise the application.
 	 *
-	 * @param   array
+	 * @param   array  $options  An optional associative array of configuration settings.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.5
 	 */
 	public function initialise($options = array())
 	{
@@ -64,13 +78,16 @@ final class JSite extends JApplication
 			$user->groups = array($guestUsergroup);
 		}
 
-		// if a language was specified it has priority
-		// otherwise use user or default language settings
+		/*
+		 * If a language was specified it has priority
+		 * Otherwise use user or default language settings
+		 */
 		JPluginHelper::importPlugin('system', 'languagefilter');
 
 		if (empty($options['language']))
 		{
 			$lang = $this->input->getString('language', null);
+
 			if ($lang && JLanguage::exists($lang))
 			{
 				$options['language'] = $lang;
@@ -81,6 +98,7 @@ final class JSite extends JApplication
 		{
 			// Detect cookie language
 			$lang = $this->input->getString(self::getHash('language'), null, 'cookie');
+
 			// Make sure that the user's language exists
 			if ($lang && JLanguage::exists($lang))
 			{
@@ -92,6 +110,7 @@ final class JSite extends JApplication
 		{
 			// Detect user language
 			$lang = $user->getParam('language');
+
 			// Make sure that the user's language exists
 			if ($lang && JLanguage::exists($lang))
 			{
@@ -103,6 +122,7 @@ final class JSite extends JApplication
 		{
 			// Detect browser language
 			$lang = JLanguageHelper::detectLanguage();
+
 			// Make sure that the user's language exists
 			if ($lang && JLanguage::exists($lang))
 			{
@@ -114,7 +134,7 @@ final class JSite extends JApplication
 		{
 			// Detect default language
 			$params = JComponentHelper::getParams('com_languages');
-			$client	= JApplicationHelper::getClientInfo($this->getClientId());
+			$client = JApplicationHelper::getClientInfo($this->getClientId());
 			$options['language'] = $params->get($client->name, $config->get('language', 'en-GB'));
 		}
 
@@ -122,12 +142,15 @@ final class JSite extends JApplication
 		if (!JLanguage::exists($options['language']))
 		{
 			$lang = $config->get('language', 'en-GB');
+
 			if (JLanguage::exists($lang))
 			{
 				$options['language'] = $lang;
 			}
-			else {
-				$options['language'] = 'en-GB'; // as a last ditch fail to english
+			else
+			{
+				// As a last ditch fail to english
+				$options['language'] = 'en-GB';
 			}
 		}
 
@@ -137,10 +160,12 @@ final class JSite extends JApplication
 		// Load Library language
 		$lang = JFactory::getLanguage();
 
-		// Try the lib_joomla file in the current language (without allowing the loading of the file in the default language)
+		/*
+		 * Try the lib_joomla file in the current language (without allowing the loading of the file in the default language)
+		 * Fallback to the lib_joomla file in the default language if the current language isn't found
+		 */
 		$lang->load('lib_joomla', JPATH_SITE, null, false, false)
 		|| $lang->load('lib_joomla', JPATH_ADMINISTRATOR, null, false, false)
-		// Fallback to the lib_joomla file in the default language
 		|| $lang->load('lib_joomla', JPATH_SITE, null, true)
 		|| $lang->load('lib_joomla', JPATH_ADMINISTRATOR, null, true);
 	}
@@ -148,35 +173,41 @@ final class JSite extends JApplication
 	/**
 	 * Route the application.
 	 *
+	 * @return  void
+	 *
+	 * @since   1.5
 	 */
 	public function route()
 	{
 		parent::route();
 
 		$Itemid = $this->input->getInt('Itemid');
+
 		$this->authorise($Itemid);
 	}
 
 	/**
-	 * Dispatch the application
+	 * Dispatch the application.
 	 *
-	 * @param   string
+	 * @param   string  $component  The component to dispatch.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.5
 	 */
 	public function dispatch($component = null)
 	{
-
 		// Get the component if not set.
 		if (!$component)
 		{
 			$component = $this->input->get('option');
 		}
 
-		$document	= JFactory::getDocument();
-		$user		= JFactory::getUser();
-		$router		= $this->getRouter();
-		$params		= $this->getParams();
+		$document = JFactory::getDocument();
+		$router   = $this->getRouter();
+		$params   = $this->getParams();
 
-		switch($document->getType())
+		switch ($document->getType())
 		{
 			case 'html':
 				// Get language
@@ -187,14 +218,19 @@ final class JSite extends JApplication
 				if (isset($languages[$lang_code]) && $languages[$lang_code]->metakey)
 				{
 					$document->setMetaData('keywords', $languages[$lang_code]->metakey);
-				} else {
+				}
+				else
+				{
 					$document->setMetaData('keywords', $this->getCfg('MetaKeys'));
 				}
+
 				$document->setMetaData('rights', $this->getCfg('MetaRights'));
+
 				if ($router->getMode() == JROUTER_MODE_SEF)
 				{
 					$document->setBase(htmlspecialchars(JURI::current()));
 				}
+
 				break;
 
 			case 'feed':
@@ -225,14 +261,18 @@ final class JSite extends JApplication
 	}
 
 	/**
-	 * Display the application.
+	 * Render the application.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.5
 	 */
 	public function render()
 	{
-		$document	= JFactory::getDocument();
-		$user		= JFactory::getUser();
+		$document = JFactory::getDocument();
+		$user     = JFactory::getUser();
 
-		// get the format to render
+		// Get the format to render
 		$format = $document->getType();
 
 		switch ($format)
@@ -243,8 +283,8 @@ final class JSite extends JApplication
 
 			case 'html':
 			default:
-				$template	= $this->getTemplate(true);
-				$file		= $this->input->get('tmpl', 'index');
+				$template = $this->getTemplate(true);
+				$file = $this->input->get('tmpl', 'index');
 
 				if (!$this->getCfg('offline') && ($file == 'offline'))
 				{
@@ -253,22 +293,25 @@ final class JSite extends JApplication
 
 				if ($this->getCfg('offline') && !$user->authorise('core.login.offline'))
 				{
-					$uri    = JURI::getInstance();
+					$uri = JUri::getInstance();
 					$return = (string) $uri;
 					$this->setUserState('users.login.form.data', array('return' => $return));
 					$file = 'offline';
 					JResponse::setHeader('Status', '503 Service Temporarily Unavailable', 'true');
 				}
+
 				if (!is_dir(JPATH_THEMES . '/' . $template->template) && !$this->getCfg('offline'))
 				{
 					$file = 'component';
 				}
+
 				$params = array(
-						'template'	=> $template->template,
-						'file'		=> $file.'.php',
-						'directory'	=> JPATH_THEMES,
-						'params'	=> $template->params
+					'template'  => $template->template,
+					'file'      => $file . '.php',
+					'directory' => JPATH_THEMES,
+					'params'    => $template->params
 				);
+
 				break;
 		}
 
@@ -281,6 +324,7 @@ final class JSite extends JApplication
 		$this->triggerEvent('onBeforeRender');
 
 		$caching = false;
+
 		if ($this->getCfg('caching') && $this->getCfg('caching', 2) == 2 && !$user->get('id'))
 		{
 			$caching = true;
@@ -296,17 +340,19 @@ final class JSite extends JApplication
 	/**
 	 * Login authentication function
 	 *
-	 * @param   array  Array('username' => string, 'password' => string)
-	 * @param   array  Array('remember' => boolean)
+	 * @param   array  $credentials  Array('username' => string, 'password' => string)
+	 * @param   array  $options      Array('remember' => boolean)
 	 *
-	 * @see JApplication::login
+	 * @return  boolean  True on success.
+	 *
+	 * @since   1.5
 	 */
 	public function login($credentials, $options = array())
 	{
 		// Set the application login entry point
 		if (!array_key_exists('entry_url', $options))
 		{
-			$options['entry_url'] = JURI::base().'index.php?option=com_users&task=user.login';
+			$options['entry_url'] = JUri::base() . 'index.php?option=com_users&task=user.login';
 		}
 
 		// Set the access control action to check.
@@ -317,18 +363,24 @@ final class JSite extends JApplication
 
 	/**
 	 * Check if the user can access the application
+	 *
+	 * @param   string  $itemid  The itemid of the menu item to check
+	 *
+	 * @return  void
+	 *
+	 * @since   1.6
 	 */
 	public function authorise($itemid)
 	{
-		$menus	= $this->getMenu();
-		$user	= JFactory::getUser();
+		$menus = $this->getMenu();
+		$user  = JFactory::getUser();
 
 		if (!$menus->authorise($itemid))
 		{
 			if ($user->get('id') == 0)
 			{
 				// Redirect to login
-				$uri    = JURI::getInstance();
+				$uri = JUri::getInstance();
 				$return = (string) $uri;
 
 				$this->setUserState('users.login.form.data', array('return' => $return));
@@ -338,7 +390,8 @@ final class JSite extends JApplication
 
 				$this->redirect($url, JText::_('JGLOBAL_YOU_MUST_LOGIN_FIRST'));
 			}
-			else {
+			else
+			{
 				JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 			}
 		}
@@ -347,8 +400,10 @@ final class JSite extends JApplication
 	/**
 	 * Get the appliaction parameters
 	 *
-	 * @param   string	The component option
+	 * @param   string  $option  The component option
+	 *
 	 * @return  object  The parameters object
+	 *
 	 * @since   1.5
 	 */
 	public function getParams($option = null)
@@ -356,10 +411,13 @@ final class JSite extends JApplication
 		static $params = array();
 
 		$hash = '__default';
+
 		if (!empty($option))
 		{
 			$hash = $option;
 		}
+
+		// Only fetch the params if not cached
 		if (!isset($params[$hash]))
 		{
 			// Get component parameters
@@ -371,22 +429,26 @@ final class JSite extends JApplication
 			$params[$hash] = clone JComponentHelper::getParams($option);
 
 			// Get menu parameters
-			$menus	= $this->getMenu();
-			$menu	= $menus->getActive();
+			$menus = $this->getMenu();
+			$menu  = $menus->getActive();
 
 			// Get language
 			$lang_code = JFactory::getLanguage()->getTag();
 			$languages = JLanguageHelper::getLanguages('lang_code');
 
 			$title = $this->getCfg('sitename');
+
 			if (isset($languages[$lang_code]) && $languages[$lang_code]->metadesc)
 			{
 				$description = $languages[$lang_code]->metadesc;
-			} else {
+			}
+			else
+			{
 				$description = $this->getCfg('MetaDesc');
 			}
 			$rights = $this->getCfg('MetaRights');
 			$robots = $this->getCfg('robots');
+
 			// Lets cascade the parameters if we have menu item parameters
 			if (is_object($menu))
 			{
@@ -394,11 +456,14 @@ final class JSite extends JApplication
 				$temp->loadString($menu->params);
 				$params[$hash]->merge($temp);
 				$title = $menu->title;
-			} else {
-				// get com_menu global settings
+			}
+			else
+			{
+				// Get com_menu global settings
 				$temp = clone JComponentHelper::getParams('com_menus');
 				$params[$hash]->merge($temp);
-				// if supplied, use page title
+
+				// If supplied, use page title
 				$title = $temp->get('page_title', $title);
 			}
 
@@ -414,9 +479,10 @@ final class JSite extends JApplication
 	/**
 	 * Get the application parameters
 	 *
-	 * @param   string	The component option
+	 * @param   string  $option  The component option
 	 *
 	 * @return  object  The parameters object
+	 *
 	 * @since   1.5
 	 */
 	public function getPageParameters($option = null)
@@ -425,42 +491,53 @@ final class JSite extends JApplication
 	}
 
 	/**
-	 * Get the template
+	 * Get the template data
 	 *
-	 * @return  string The template name
-	 * @since 1.0
+	 * @param   boolean  $params  True to return the template with params, false for only the template name
+	 *
+	 * @return  mixed  The template name or the full template data object
+	 *
+	 * @since   1.5
 	 */
 	public function getTemplate($params = false)
 	{
-		if (is_object($this->template))
+		// If the template data is already cached, then return it.
+		if (is_object($this->_template))
 		{
 			if ($params)
 			{
-				return $this->template;
+				return $this->_template;
 			}
-			return $this->template->template;
+
+			return $this->_template->template;
 		}
+
 		// Get the id of the active menu item
 		$menu = $this->getMenu();
 		$item = $menu->getActive();
+
 		if (!$item)
 		{
 			$item = $menu->getItem($this->input->getInt('Itemid'));
 		}
 
 		$id = 0;
-		if (is_object($item)) { // valid item retrieved
+
+		if (is_object($item))
+		{
+			// Valid item retrieved
 			$id = $item->template_style_id;
 		}
-		$condition = '';
 
 		$tid = $this->input->get('templateStyle', 0, 'uint');
+
 		if (is_numeric($tid) && (int) $tid > 0)
 		{
 			$id = (int) $tid;
 		}
 
 		$cache = JFactory::getCache('com_templates', '');
+
 		if ($this->_language_filter)
 		{
 			$tag = JFactory::getLanguage()->getTag();
@@ -469,7 +546,8 @@ final class JSite extends JApplication
 		{
 			$tag = '';
 		}
-		if (!$templates = $cache->get('templates0'.$tag))
+
+		if (!$templates = $cache->get('templates0' . $tag))
 		{
 			// Load styles
 			$db = JFactory::getDbo();
@@ -478,7 +556,7 @@ final class JSite extends JApplication
 			$query->from('#__template_styles as s');
 			$query->where('s.client_id = 0');
 			$query->where('e.enabled = 1');
-			$query->leftJoin('#__extensions as e ON e.element=s.template AND e.type='.$db->quote('template').' AND e.client_id=s.client_id');
+			$query->leftJoin('#__extensions as e ON e.element=s.template AND e.type=' . $db->quote('template') . ' AND e.client_id=s.client_id');
 
 			$db->setQuery($query);
 			$templates = $db->loadObjectList('id');
@@ -490,13 +568,12 @@ final class JSite extends JApplication
 				$template->params = $registry;
 
 				// Create home element
-				//sqlsrv change
 				if ($template->home == 1 && !isset($templates[0]) || $this->_language_filter && $template->home == $tag)
 				{
 					$templates[0] = clone $template;
 				}
 			}
-			$cache->store($templates, 'templates0'.$tag);
+			$cache->store($templates, 'templates0' . $tag);
 		}
 
 		if (isset($templates[$id]))
@@ -510,13 +587,16 @@ final class JSite extends JApplication
 
 		// Allows for overriding the active template from the request
 		$template->template = $this->input->get('template', $template->template);
-		$template->template = JFilterInput::getInstance()->clean($template->template, 'cmd'); // need to filter the default value as well
+
+		// Need to filter the default value as well
+		$template->template = JFilterInput::getInstance()->clean($template->template, 'cmd');
 
 		// Fallback template
 		if (!file_exists(JPATH_THEMES . '/' . $template->template . '/index.php'))
 		{
 			JError::raiseWarning(0, JText::_('JERROR_ALERTNOTEMPLATE'));
 			$template->template = 'beez3';
+
 			if (!file_exists(JPATH_THEMES . '/beez3/index.php'))
 			{
 				$template->template = '';
@@ -524,75 +604,88 @@ final class JSite extends JApplication
 		}
 
 		// Cache the result
-		$this->template = $template;
+		$this->_template = $template;
+
 		if ($params)
 		{
 			return $template;
 		}
+
 		return $template->template;
 	}
 
 	/**
 	 * Overrides the default template that would be used
 	 *
-	 * @param string	The template name
-	 * @param mixed		The template style parameters
+	 * @param   string  $template     The template name
+	 * @param   mixed   $styleParams  The template style parameters
+	 *
+	 * @return  void
+	 *
+	 * @since   1.5
 	 */
-	public function setTemplate($template, $styleParams=null)
+	public function setTemplate($template, $styleParams = null)
 	{
 		if (is_dir(JPATH_THEMES . '/' . $template))
 		{
-			$this->template = new stdClass;
-			$this->template->template = $template;
+			$this->_template = new stdClass;
+			$this->_template->template = $template;
+
 			if ($styleParams instanceof JRegistry)
 			{
-				$this->template->params = $styleParams;
+				$this->_template->params = $styleParams;
 			}
-			else {
-				$this->template->params = new JRegistry($styleParams);
+			else
+			{
+				$this->_template->params = new JRegistry($styleParams);
 			}
 		}
 	}
 
 	/**
-	 * Return a reference to the JPathway object.
+	 * Returns the application JMenu object.
 	 *
-	 * @param   string	$name		The name of the application/client.
-	 * @param   array  $options	An optional associative array of configuration settings.
+	 * @param   string  $name     The name of the application/client.
+	 * @param   array   $options  An optional associative array of configuration settings.
 	 *
-	 * @return  object  JMenu.
-	 * @since   1.5
+	 * @return  JMenu  JMenu object.
+	 *
+	 * @since	1.5
 	 */
 	public function getMenu($name = null, $options = array())
 	{
-		$options	= array();
-		$menu		= parent::getMenu('site', $options);
+		$options = array();
+		$menu    = parent::getMenu('site', $options);
+
 		return $menu;
 	}
 
 	/**
-	 * Return a reference to the JPathway object.
+	 * Returns the application JPathway object.
 	 *
-	 * @param   string	$name		The name of the application.
-	 * @param   array  $options	An optional associative array of configuration settings.
+	 * @param   string  $name     The name of the application.
+	 * @param   array   $options  An optional associative array of configuration settings.
 	 *
-	 * @return  object JPathway.
+	 * @return  JPathway  A JPathway object
+	 *
 	 * @since   1.5
 	 */
 	public function getPathway($name = null, $options = array())
 	{
 		$options = array();
 		$pathway = parent::getPathway('site', $options);
+
 		return $pathway;
 	}
 
 	/**
-	 * Return a reference to the JRouter object.
+	 * Returns the application JRouter object.
 	 *
-	 * @param   string	$name		The name of the application.
-	 * @param   array  $options	An optional associative array of configuration settings.
+	 * @param   string  $name     The name of the application.
+	 * @param   array   $options  An optional associative array of configuration settings.
 	 *
-	 * @return  JRouter
+	 * @return  JRouter  A JRouter object
+	 *
 	 * @since   1.5
 	 */
 	static public function getRouter($name = null, array $options = array())
@@ -600,6 +693,7 @@ final class JSite extends JApplication
 		$config = JFactory::getConfig();
 		$options['mode'] = $config->get('sef');
 		$router = parent::getRouter('site', $options);
+
 		return $router;
 	}
 
@@ -607,6 +701,7 @@ final class JSite extends JApplication
 	 * Return the current state of the language filter.
 	 *
 	 * @return  boolean
+	 *
 	 * @since   1.6
 	 */
 	public function getLanguageFilter()
@@ -617,19 +712,24 @@ final class JSite extends JApplication
 	/**
 	 * Set the current state of the language filter.
 	 *
+	 * @param   boolean  $state  The new state
+	 *
 	 * @return  boolean  The old state
+	 *
 	 * @since   1.6
 	 */
-	public function setLanguageFilter($state=false)
+	public function setLanguageFilter($state = false)
 	{
 		$old = $this->_language_filter;
 		$this->_language_filter = $state;
+
 		return $old;
 	}
 	/**
 	 * Return the current state of the detect browser option.
 	 *
 	 * @return  boolean
+	 *
 	 * @since   1.6
 	 */
 	public function getDetectBrowser()
@@ -640,13 +740,17 @@ final class JSite extends JApplication
 	/**
 	 * Set the current state of the detect browser option.
 	 *
+	 * @param   boolean  $state  The new state
+	 *
 	 * @return  boolean  The old state
+	 *
 	 * @since   1.6
 	 */
-	public function setDetectBrowser($state=false)
+	public function setDetectBrowser($state = false)
 	{
 		$old = $this->_detect_browser;
 		$this->_detect_browser = $state;
+
 		return $old;
 	}
 
@@ -659,21 +763,24 @@ final class JSite extends JApplication
 	 * code in the header pointing to the new location. If the headers have already been
 	 * sent this will be accomplished using a JavaScript statement.
 	 *
-	 * @param   string	The URL to redirect to. Can only be http/https URL
-	 * @param   string	An optional message to display on redirect.
-	 * @param   string  An optional message type.
-	 * @param   boolean	True if the page is 301 Permanently Moved, otherwise 303 See Other is assumed.
-	 * @param   boolean	True if the enqueued messages are passed to the redirection, false else.
-	 * @return  none; calls exit().
+	 * @param   string   $url         The URL to redirect to. Can only be http/https URL
+	 * @param   string   $msg         An optional message to display on redirect.
+	 * @param   string   $msgType     An optional message type. Defaults to message.
+	 * @param   boolean  $moved       True if the page is 301 Permanently Moved, otherwise 303 See Other is assumed.
+	 * @param   boolean  $persistMsg  True if the enqueued messages are passed to the redirection, false else.
+	 *
+	 * @return  void  Calls exit().
+	 *
 	 * @since   1.5
 	 * @see     JApplication::enqueueMessage()
 	 */
-	public function redirect($url, $msg='', $msgType='message', $moved = false, $persistMsg = true)
+	public function redirect($url, $msg = '', $msgType = 'message', $moved = false, $persistMsg = true)
 	{
 		if (!$persistMsg)
 		{
 			$this->_messageQueue = array();
 		}
+
 		parent::redirect($url, $msg, $msgType, $moved);
 	}
 }

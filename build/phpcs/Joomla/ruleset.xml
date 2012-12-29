@@ -61,7 +61,6 @@
   <exclude-pattern>/components/*</exclude-pattern>
   <exclude-pattern>/plugins/*</exclude-pattern>
   <exclude-pattern>/modules/*</exclude-pattern>
-  <exclude-pattern>/includes/*</exclude-pattern>
   <!-- These exceptions are permanent -->
   <exclude-pattern>*/tmpl/*</exclude-pattern>
   <exclude-pattern>/templates/*</exclude-pattern>
@@ -155,7 +154,6 @@
   <exclude-pattern>/modules/*</exclude-pattern>
   <exclude-pattern>/templates/*</exclude-pattern>
   <exclude-pattern>/layouts/*</exclude-pattern>
-  <exclude-pattern>/includes/*</exclude-pattern>
  </rule>
 
  <rule ref="Joomla.Commenting.SingleComment">
@@ -166,7 +164,6 @@
   <exclude-pattern>/modules/*</exclude-pattern>
   <exclude-pattern>/templates/*</exclude-pattern>
   <exclude-pattern>/layouts/*</exclude-pattern>
-  <exclude-pattern>/includes/*</exclude-pattern>
  </rule>
 
  <rule ref="Joomla.Commenting.ClassComment">
@@ -185,7 +182,6 @@
   <exclude-pattern>/modules/*</exclude-pattern>
   <exclude-pattern>/templates/*</exclude-pattern>
   <exclude-pattern>/layouts/*</exclude-pattern>
-  <exclude-pattern>/includes/*</exclude-pattern>
  </rule>
 
  <rule ref="Joomla.ControlStructures.ControlSignature">
@@ -194,7 +190,6 @@
   <exclude-pattern>/components/*</exclude-pattern>
   <exclude-pattern>/plugins/*</exclude-pattern>
   <exclude-pattern>/modules/*</exclude-pattern>
-  <exclude-pattern>/includes/*</exclude-pattern>
   <!-- These exceptions are permanent -->
   <exclude-pattern>*/tmpl/*</exclude-pattern>
   <exclude-pattern>/templates/*</exclude-pattern>
