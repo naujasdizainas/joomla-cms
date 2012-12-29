@@ -238,9 +238,15 @@ abstract class JHtmlBootstrap
 		$html .= "</div>\n";
 		$html .= "</div>\n";
 
+		// Build the modal body
+		$container = "<div class=\"modal-body\">\n";
+		$container .= "<iframe class=\"iframe\" src=\"" . $params['url'] . "\" height=\"" . $params['height'] . "\" width=\"" . $params['width'] . "\">";
+		$container .= "</iframe>\n";
+		$container .= "</div>" . $footer;
+
 		$html .= "<script>";
 		$html .= "jQuery('#" . $selector . "').on('show', function () {\n";
-		$html .= "document.getElementById('" . $selector . "-container').innerHTML = '<div class=\"modal-body\"><iframe class=\"iframe\" src=\"" . $params['url'] . "\" height=\"" . $params['height'] . "\" width=\"" . $params['width'] . "\"></iframe></div>" . $footer . "';\n";
+		$html .= "document.getElementById('" . $selector . "-container').innerHTML = '" . $container . "';\n";
 		$html .= "});\n";
 		$html .= "</script>";
 

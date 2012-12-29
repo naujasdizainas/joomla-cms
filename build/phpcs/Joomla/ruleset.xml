@@ -18,6 +18,10 @@
  <exclude-pattern>/tmp/*</exclude-pattern>
  <exclude-pattern>/logs/*</exclude-pattern>
 
+ <!-- Exclude the media folders -->
+ <exclude-pattern>/images/*</exclude-pattern>
+ <exclude-pattern>/media/*</exclude-pattern>
+
  <!-- Exclude 3rd party libraries. -->
  <exclude-pattern>/libraries/phputf8/*</exclude-pattern>
  <exclude-pattern>/libraries/simplepie/*</exclude-pattern>
@@ -28,6 +32,15 @@
  <exclude-pattern>*/mootree*.css</exclude-pattern>
  <exclude-pattern>*/mooRainbow.css</exclude-pattern>
  <exclude-pattern>*/modal.css</exclude-pattern>
+
+ <!-- Exclude the Platform files, they should be passing codestyle checks in its repo -->
+ <exclude-pattern>/libraries/joomla/*</exclude-pattern>
+ <exclude-pattern>/libraries/legacy/*</exclude-pattern>
+ <exclude-pattern>/libraries/compat/*</exclude-pattern>
+ <exclude-pattern>/libraries/import.legacy.php</exclude-pattern>
+ <exclude-pattern>/libraries/import.php</exclude-pattern>
+ <exclude-pattern>/libraries/loader.php</exclude-pattern>
+ <exclude-pattern>/libraries/platform.php</exclude-pattern>
 
  <exclude-pattern>/administrator/components/com_joomlaupdate/restore.php</exclude-pattern>
  <exclude-pattern>/configuration.php</exclude-pattern>
@@ -48,7 +61,6 @@
   <exclude-pattern>/components/*</exclude-pattern>
   <exclude-pattern>/plugins/*</exclude-pattern>
   <exclude-pattern>/modules/*</exclude-pattern>
-  <exclude-pattern>/libraries/*</exclude-pattern>
   <exclude-pattern>/includes/*</exclude-pattern>
   <!-- These exceptions are permanent -->
   <exclude-pattern>*/tmpl/*</exclude-pattern>
@@ -76,7 +88,8 @@
   <exclude-pattern>/administrator/components/*</exclude-pattern>
   <exclude-pattern>/components/*</exclude-pattern>
   <exclude-pattern>/modules/*</exclude-pattern>
-  <exclude-pattern>/libraries/cms/*</exclude-pattern>
+  <!-- Need to make B/C breaking API change to JHtmlSortablelist::sortable() to resolve error in this file -->
+  <exclude-pattern>/libraries/cms/html/sortablelist.php</exclude-pattern>
  </rule>
 
  <rule ref="PEAR.NamingConventions.ValidClassName"/>

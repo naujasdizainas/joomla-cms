@@ -80,8 +80,8 @@ class JFormFieldUser extends JFormField
 
 		// Create a dummy text field with the user name.
 		$html[] = '<div class="input-append">';
-		$html[] = '	<input class="input-medium" type="text" id="' . $this->id . '_name"' . ' value="' . htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8') . '"'
-			. ' disabled="disabled"' . $attr . ' />';
+		$html[] = '	<input class="input-medium" type="text" id="' . $this->id . '_name"'
+			. ' value="' . htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8') . '"' . ' disabled="disabled"' . $attr . ' />';
 
 		// Create the user select button.
 		if ($this->element['readonly'] != 'true')
