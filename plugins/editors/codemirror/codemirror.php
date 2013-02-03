@@ -116,7 +116,8 @@ class PlgEditorCodemirror extends JPlugin
 	 *
 	 * @return  string HTML
 	 */
-	public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
+	public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null,
+		$params = array())
 	{
 		if (empty($id))
 		{
@@ -166,7 +167,15 @@ class PlgEditorCodemirror extends JPlugin
 					break;
 
 				case 'php':
-					$parserFile = array('parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'tokenizephp.js', 'parsephp.js', 'parsephphtmlmixed.js');
+					$parserFile = array(
+						'parsexml.js',
+						'parsecss.js',
+						'tokenizejavascript.js',
+						'parsejavascript.js',
+						'tokenizephp.js',
+						'parsephp.js',
+						'parsephphtmlmixed.js'
+					);
 					$styleSheet = array('xmlcolors.css', 'jscolors.css', 'csscolors.css', 'phpcolors.css');
 					break;
 

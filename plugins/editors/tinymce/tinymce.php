@@ -738,7 +738,8 @@ class PlgEditorTinymce extends JPlugin
 			$height .= 'px';
 		}
 
-		$editor  = '<textarea name="' . $name . '" id="' . $id .'" cols="' . $col .'" rows="' . $row . '" style="width: ' . $width . '; height:' . $height . ';" class="mce_editable">' . $content . "</textarea>\n" .
+		$editor  = '<textarea name="' . $name . '" id="' . $id .'" cols="' . $col .'" rows="' . $row . '" style="width: ' . $width
+				. '; height:' . $height . ';" class="mce_editable">' . $content . "</textarea>\n" .
 		$this->_displayButtons($id, $buttons, $asset, $author) .
 		$this->_toogleButton($id);
 
@@ -807,9 +808,13 @@ class PlgEditorTinymce extends JPlugin
 	 */
 	private function _toogleButton($name)
 	{
-		$return  = '';
-		$return .= "\n<div class=\"toggle-editor btn-toolbar pull-right\">\n";
-		$return .= "<div class=\"btn-group\"><a class=\"btn\" href=\"#\" onclick=\"tinyMCE.execCommand('mceToggleEditor', false, '" . $name . "');return false;\" title=\"".JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR').'"><i class="icon-eye"></i> '.JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR')."</a></div>";
+		$onclick = "tinyMCE.execCommand('mceToggleEditor', false, '" . $name . "');return false;";
+
+		$return  = "\n";
+		$return .= "<div class=\"toggle-editor btn-toolbar pull-right\">\n";
+		$return .= "<div class=\"btn-group\">\n";
+		$return .= "<a class=\"btn\" href=\"#\" onclick=\"" . $onclick . "\" title=\"" . JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR') . "\">";
+		$return .= "<i class=\"icon-eye\"></i> " . JText::_('PLG_TINY_BUTTON_TOGGLE_EDITOR') . "</a></div>";
 		$return .= "</div>\n";
 
 		$return .= "<div class=\"clearfix\"></div>\n";

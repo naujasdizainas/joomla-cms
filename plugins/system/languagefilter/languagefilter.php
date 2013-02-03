@@ -398,7 +398,10 @@ class PlgSystemLanguageFilter extends JPlugin
 			{
 				if ($app->isSite())
 				{
-					$app->setUserState('com_users.edit.profile.redirect', 'index.php?Itemid='.$app->getMenu()->getDefault($lang_code)->id.'&lang='.$lang_codes[$lang_code]->sef);
+					$app->setUserState(
+						'com_users.edit.profile.redirect',
+						'index.php?Itemid=' . $app->getMenu()->getDefault($lang_code)->id . '&lang=' . $lang_codes[$lang_code]->sef
+					);
 					self::$tag = $lang_code;
 					// Create a cookie
 					$conf = JFactory::getConfig();

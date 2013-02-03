@@ -59,8 +59,6 @@
   <!-- These exceptions are temporary -->
   <exclude-pattern>/administrator/*</exclude-pattern>
   <exclude-pattern>/components/*</exclude-pattern>
-  <exclude-pattern>/plugins/*</exclude-pattern>
-  <exclude-pattern>/modules/*</exclude-pattern>
   <!-- These exceptions are permanent -->
   <exclude-pattern>*/tmpl/*</exclude-pattern>
   <exclude-pattern>/templates/*</exclude-pattern>
