@@ -109,6 +109,5 @@
 		</apply>
 	</target>
 
-
 	<target name="build" depends="clean,phpunit,parallelTasks" />
 </project>

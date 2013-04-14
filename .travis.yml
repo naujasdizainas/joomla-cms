@@ -1,0 +1,15 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+
+before_script:
+  - pyrus channel-discover pear.phpunit.de
+  - pyrus install --force phpunit/DbUnit
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
+
+script:
+  - phpunit --configuration travisci-phpunit.xml
+  - phpcs --report=full -p -w -v --standard=build/phpcs/Joomla/ruleset.xml .
