@@ -12,4 +12,4 @@ before_script:
 
 script:
   - phpunit --configuration travisci-phpunit.xml
-  - phpcs --report=full -p -w -v --standard=/home/travis/build/mbabker/joomla-cms/build/phpcs/Joomla/ruleset.xml /home/travis/build/mbabker/joomla-cms
+  - phpcs --report=full -p -w -vvv --standard=build/phpcs/Joomla/ruleset.xml .
