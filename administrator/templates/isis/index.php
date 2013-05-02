@@ -59,11 +59,11 @@ foreach ($this->submenumodules as $submenumodule)
 // Logo file
 if ($this->params->get('logoFile'))
 {
-	$logo = JURI::root() . $this->params->get('logoFile');
+	$logo = JUri::root() . $this->params->get('logoFile');
 }
 else
 {
-	$logo = $this->baseurl . "/templates/" . $this->template . "/images/logo.png";
+	$logo = $this->baseurl . '/templates/' . $this->template . '/images/logo.png';
 }
 
 // Template Parameters
@@ -78,8 +78,7 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 	<jdoc:include type="head" />
 	<?php
 	// Template color
-	if ($this->params->get('templateColor'))
-	{
+	if ($this->params->get('templateColor')) :
 	?>
 	<style type="text/css">
 		.navbar-inner, .navbar-inverse .navbar-inner, .dropdown-menu li > a:hover, .dropdown-menu .active > a, .dropdown-menu .active > a:hover, .navbar-inverse .nav li.dropdown.open > .dropdown-toggle, .navbar-inverse .nav li.dropdown.active > .dropdown-toggle, .navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle, #status.status-top
@@ -92,13 +91,10 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 			box-shadow: 0 1px 3px rgba(0, 0, 0, .25), inset 0 -1px 0 rgba(0, 0, 0, .1), inset 0 30px 10px rgba(0, 0, 0, .2);
 		}
 	</style>
-	<?php
-	}
-	?>
+	<?php endif; ?>
 	<?php
 	// Template header color
-	if ($this->params->get('headerColor'))
-	{
+	if ($this->params->get('headerColor')) :
 	?>
 	<style type="text/css">
 		.header
@@ -106,9 +102,7 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 			background: <?php echo $this->params->get('headerColor');?>;
 		}
 	</style>
-	<?php
-	}
-	?>
+	<?php endif; ?>
 
 	<!-- Sidebar background color -->
 	<?php if ($this->params->get('sidebarColor')) : ?>
@@ -137,7 +131,7 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 						<span class="icon-bar"></span>
 					</a>
 				<?php endif; ?>
-				<a class="brand" href="<?php echo JURI::root(); ?>" title="<?php echo JText::sprintf('TPL_ISIS_PREVIEW', $sitename);?>" target="_blank"><?php echo JHtml::_('string.truncate', $sitename, 14, false, false);?> <i class="icon-out-2 small"></i></a>
+				<a class="brand" href="<?php echo JUri::root(); ?>" title="<?php echo JText::sprintf('TPL_ISIS_PREVIEW', $sitename);?>" target="_blank"><?php echo JHtml::_('string.truncate', $sitename, 14, false, false);?> <i class="icon-out-2 small"></i></a>
 				<?php if ($this->params->get('admin_menus') != '0') : ?>
 				<div class="nav-collapse">
 				<?php else : ?>
@@ -159,9 +153,7 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 		</div>
 	</nav>
 	<!-- Header -->
-	<?php
-	if ($displayHeader):
-	?>
+	<?php if ($displayHeader): ?>
 	<header class="header">
 		<div class="container-fluid">
 			<div class="row-fluid">
@@ -169,21 +161,13 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 					<a class="logo" href="<?php echo $this->baseurl; ?>"><img src="<?php echo $logo;?>" alt="<?php echo $sitename; ?>" /></a>
 				</div>
 				<div class="span10">
-					<?php if (isset($app->JComponentTitle)) : ?>
-						<h1 class="page-title"><?php echo JHtml::_('string.truncate', $app->JComponentTitle, 0, false, false);?></h1>
-					<?php else : ?>
-						<h1 class="page-title"><?php echo JHtml::_('string.truncate', '', 0, false, false);?></h1>
-					<?php endif; ?>
+					<jdoc:include type="modules" name="title" />
 				</div>
 			</div>
 		</div>
 	</header>
-	<?php
-	endif;
-	?>
-	<?php
-	if ((!$statusFixed) && ($this->countModules('status'))):
-	?>
+	<?php endif; ?>
+	<?php if ((!$statusFixed) && ($this->countModules('status'))) : ?>
 	<!-- Begin Status Module -->
 	<div id="status" class="navbar status-top hidden-phone">
 		<div class="btn-toolbar">
@@ -192,12 +176,8 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 		<div class="clearfix"></div>
 	</div>
 	<!-- End Status Module -->
-	<?php
-	endif;
-	?>
-	<?php
-	if (!$cpanel):
-	?>
+	<?php endif; ?>
+	<?php if (!$cpanel): ?>
 	<!-- Subheader -->
 	<a class="btn btn-subhead" data-toggle="collapse" data-target=".subhead-collapse"><?php echo JText::_('TPL_ISIS_TOOLBAR');?> <i class="icon-wrench"></i></a>
 	<div class="subhead-collapse">
@@ -212,13 +192,9 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 			</div>
 		</div>
 	</div>
-	<?php
-	else:
-	?>
+	<?php else : ?>
 	<div style="margin-bottom: 20px"></div>
-	<?php
-	endif;
-	?>
+	<?php endif; ?>
 	<!-- container-fluid -->
 	<div class="container-fluid container-main">
 		<section id="content">
@@ -236,12 +212,9 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 						<jdoc:include type="message" />
 						<?php
 						// Show the page title here if the header is hidden
-						if (!$displayHeader):
-						?>
+						if (!$displayHeader) : ?>
 						<h1 class="content-title"><?php echo JHtml::_('string.truncate', $app->JComponentTitle, 0, false, false);?></h1>
-						<?php
-						endif;
-						?>
+						<?php endif; ?>
 						<jdoc:include type="component" />
 					</div>
 			</div>
@@ -276,7 +249,7 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 	<jdoc:include type="modules" name="debug" style="none" />
 	<?php if ($stickyToolbar) : ?>
 	<script>
-		(function($){
+		(function($) {
 			// fix sub nav on scroll
 			var $win = $(window)
 			  , $nav = $('.subhead')
@@ -286,22 +259,20 @@ $stickyToolbar = $this->params->get('stickyToolbar', '1');
 			processScroll()
 
 			// hack sad times - holdover until rewrite for 2.1
-			$nav.on('click', function ()
-			{
-				if (!isFixed) setTimeout(function () {  $win.scrollTop($win.scrollTop() - 47) }, 10)
+			$nav.on('click', function() {
+				if (!isFixed) setTimeout(function() {
+					$win.scrollTop($win.scrollTop() - 47)
+				}, 10)
 			})
 
 			$win.on('scroll', processScroll)
 
-			function processScroll()
-			{
+			function processScroll() {
 				var i, scrollTop = $win.scrollTop()
-				if (scrollTop >= navTop && !isFixed)
-				{
+				if (scrollTop >= navTop && !isFixed) {
 					isFixed = 1
 					$nav.addClass('subhead-fixed')
-				} else if (scrollTop <= navTop && isFixed)
-				{
+				} else if (scrollTop <= navTop && isFixed) {
 					isFixed = 0
 					$nav.removeClass('subhead-fixed')
 				}
