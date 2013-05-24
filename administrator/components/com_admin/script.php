@@ -592,6 +592,8 @@ class JoomlaInstallerScript
 			'/libraries/legacy/html/contentlanguage.php',
 			'/libraries/legacy/html/index.html',
 			'/libraries/legacy/html/menu.php',
+			'/libraries/legacy/pathway/index.html',
+			'/libraries/legacy/pathway/pathway.php',
 			'/media/system/css/mooRainbow.css',
 			'/media/system/js/mooRainbow-uncompressed.js',
 			'/media/system/js/mooRainbow.js',
@@ -649,6 +651,7 @@ class JoomlaInstallerScript
 			'/libraries/joomla/installer',
 			'/libraries/joomla/pagination',
 			'/libraries/legacy/html',
+			'/libraries/legacy/pathway',
 			'/media/system/swf/',
 		);
 
