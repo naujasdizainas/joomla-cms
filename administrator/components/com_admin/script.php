@@ -540,6 +540,7 @@ class JoomlaInstallerScript
 			'/media/plg_quickicon_extensionupdate/extensionupdatecheck.js',
 			'/media/plg_quickicon_joomlaupdate/jupdatecheck.js',
 			// Joomla! 3.1
+			'/libraries/joomla/application/router.php',
 			'/libraries/joomla/form/rules/boolean.php',
 			'/libraries/joomla/form/rules/color.php',
 			'/libraries/joomla/form/rules/email.php',
