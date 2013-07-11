@@ -72,6 +72,7 @@ class JDocument
 	 * Document generator
 	 *
 	 * @var    string
+	 * @since  11.1
 	 */
 	public $_generator = 'Joomla! - Open Source Content Management';
 
@@ -196,7 +197,9 @@ class JDocument
 	public static $_buffer = null;
 
 	/**
-	 * @var    array  JDocument instances container.
+	 * JDocument instances container
+	 *
+	 * @var    array
 	 * @since  11.3
 	 */
 	protected static $instances = array();
@@ -278,9 +281,11 @@ class JDocument
 
 			// Determine the path and class
 			$class = 'JDocument' . $type;
+
 			if (!class_exists($class))
 			{
 				$path = __DIR__ . '/' . $type . '/' . $type . '.php';
+
 				if (file_exists($path))
 				{
 					require_once $path;
@@ -374,6 +379,7 @@ class JDocument
 	public function getMetaData($name, $httpEquiv = false)
 	{
 		$name = strtolower($name);
+
 		if ($name == 'generator')
 		{
 			$result = $this->getGenerator();
@@ -901,7 +907,7 @@ class JDocument
 	 */
 	public function loadRenderer($type)
 	{
-		$class = 'JDocumentRenderer' . $type;
+		$class = 'JDocumentRenderer' . ucfirst($type);
 
 		if (!class_exists($class))
 		{

@@ -93,7 +93,7 @@ class JDocumentHTML extends JDocument
 	protected $_caching = null;
 
 	/**
-	 * Set to true when the document should be output as HTML%
+	 * Set to true when the document should be output as HTML5
 	 *
 	 * @var    boolean
 	 * @since  12.1
@@ -139,6 +139,7 @@ class JDocumentHTML extends JDocument
 		$data['script']      = $this->_script;
 		$data['custom']      = $this->_custom;
 		$data['scriptText']  = JText::script();
+
 		return $data;
 	}
 
@@ -155,7 +156,7 @@ class JDocumentHTML extends JDocument
 	{
 		if (empty($data) || !is_array($data))
 		{
-			return;
+			return $this;
 		}
 
 		$this->title        = (isset($data['title']) && !empty($data['title'])) ? $data['title'] : $this->title;
@@ -191,7 +192,6 @@ class JDocumentHTML extends JDocument
 	 */
 	public function mergeHeadData($data)
 	{
-
 		if (empty($data) || !is_array($data))
 		{
 			return;
@@ -210,6 +210,7 @@ class JDocumentHTML extends JDocument
 			foreach ($data['metaTags'] as $type1 => $data1)
 			{
 				$booldog = $type1 == 'http-equiv' ? true : false;
+
 				foreach ($data1 as $name2 => $data2)
 				{
 					$this->setMetaData($name2, $data2, $booldog);
@@ -338,7 +339,7 @@ class JDocumentHTML extends JDocument
 	 *
 	 * @param   bool  $state  True when HTML5 should be output
 	 *
-	 * @return  void
+	 * @return  JDocumentHTML instance of $this to allow chaining
 	 *
 	 * @since   12.1
 	 */
@@ -348,6 +349,8 @@ class JDocumentHTML extends JDocument
 		{
 			$this->_html5 = $state;
 		}
+
+		return $this;
 	}
 
 	/**
@@ -370,12 +373,14 @@ class JDocumentHTML extends JDocument
 		}
 
 		$title = (isset($attribs['title'])) ? $attribs['title'] : null;
+
 		if (isset(parent::$_buffer[$type][$name][$title]))
 		{
 			return parent::$_buffer[$type][$name][$title];
 		}
 
 		$renderer = $this->loadRenderer($type);
+
 		if ($this->_caching == true && $type == 'modules')
 		{
 			$cache = JFactory::getCache('com_modules', '');
@@ -477,6 +482,7 @@ class JDocumentHTML extends JDocument
 		}
 
 		parent::render();
+
 		return $data;
 	}
 
@@ -493,6 +499,18 @@ class JDocumentHTML extends JDocument
 	{
 		$operators = '(\+|\-|\*|\/|==|\!=|\<\>|\<|\>|\<=|\>=|and|or|xor)';
 		$words = preg_split('# ' . $operators . ' #', $condition, null, PREG_SPLIT_DELIM_CAPTURE);
+
+		if (count($words) === 1)
+		{
+			$name = strtolower($words[0]);
+			$result = ((isset(parent::$_buffer['modules'][$name])) && (parent::$_buffer['modules'][$name] === false))
+						? 0 : count(JModuleHelper::getModules($name));
+
+			return $result;
+		}
+
+		JLog::add('Using an expression in JDocumentHtml::countModules() is deprecated.', JLog::WARNING, 'deprecated');
+
 		for ($i = 0, $n = count($words); $i < $n; $i += 2)
 		{
 			// Odd parts (modules)
@@ -524,6 +542,7 @@ class JDocumentHTML extends JDocument
 			$app = JFactory::getApplication();
 			$menu = $app->getMenu();
 			$active = $menu->getActive();
+
 			if ($active)
 			{
 				$query = $db->getQuery(true)
@@ -575,9 +594,11 @@ class JDocumentHTML extends JDocument
 		// Try to find a favicon by checking the template and root folder
 		$path = $directory . '/';
 		$dirs = array($path, JPATH_BASE . '/');
+
 		foreach ($dirs as $dir)
 		{
 			$icon = $dir . 'favicon.ico';
+
 			if (file_exists($icon))
 			{
 				$path = str_replace(JPATH_BASE . '/', '', $dir);
@@ -623,7 +644,7 @@ class JDocumentHTML extends JDocument
 
 		// Assign the variables
 		$this->template = $template;
-		$this->baseurl = JUri::base(true);
+		$this->baseurl = JURI::base(true);
 		$this->params = isset($params['params']) ? $params['params'] : new JRegistry;
 
 		// Load
@@ -665,6 +686,7 @@ class JDocumentHTML extends JDocument
 					$template_tags_last[$matches[0][$i]] = array('type' => $type, 'name' => $name, 'attribs' => $attribs);
 				}
 			}
+
 			// Reverse the last array so the jdocs are in forward order.
 			$template_tags_last = array_reverse($template_tags_last);
 

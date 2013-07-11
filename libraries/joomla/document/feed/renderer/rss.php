@@ -36,7 +36,7 @@ class JDocumentRendererRSS extends JDocumentRenderer
 	 *
 	 * @return  string  The output of the script
 	 *
-	 * @see JDocumentRenderer::render()
+	 * @see     JDocumentRenderer::render()
 	 * @since   11.1
 	 */
 	public function render($name = '', $params = null, $content = null)
@@ -84,43 +84,53 @@ class JDocumentRendererRSS extends JDocumentRenderer
 			$feed .= "			<url>" . $data->image->url . "</url>\n";
 			$feed .= "			<title>" . htmlspecialchars($data->image->title, ENT_COMPAT, 'UTF-8') . "</title>\n";
 			$feed .= "			<link>" . str_replace(' ', '%20', $data->image->link) . "</link>\n";
+
 			if ($data->image->width != "")
 			{
 				$feed .= "			<width>" . $data->image->width . "</width>\n";
 			}
+
 			if ($data->image->height != "")
 			{
 				$feed .= "			<height>" . $data->image->height . "</height>\n";
 			}
+
 			if ($data->image->description != "")
 			{
 				$feed .= "			<description><![CDATA[" . $data->image->description . "]]></description>\n";
 			}
+
 			$feed .= "		</image>\n";
 		}
+
 		if ($data->language != "")
 		{
 			$feed .= "		<language>" . $data->language . "</language>\n";
 		}
+
 		if ($data->copyright != "")
 		{
 			$feed .= "		<copyright>" . htmlspecialchars($data->copyright, ENT_COMPAT, 'UTF-8') . "</copyright>\n";
 		}
+
 		if ($data->editorEmail != "")
 		{
 			$feed .= "		<managingEditor>" . htmlspecialchars($data->editorEmail, ENT_COMPAT, 'UTF-8') . ' ('
 				. htmlspecialchars($data->editor, ENT_COMPAT, 'UTF-8') . ")</managingEditor>\n";
 		}
+
 		if ($data->webmaster != "")
 		{
 			$feed .= "		<webMaster>" . htmlspecialchars($data->webmaster, ENT_COMPAT, 'UTF-8') . "</webMaster>\n";
 		}
+
 		if ($data->pubDate != "")
 		{
 			$pubDate = JFactory::getDate($data->pubDate);
 			$pubDate->setTimeZone($tz);
 			$feed .= "		<pubDate>" . htmlspecialchars($pubDate->toRFC822(true), ENT_COMPAT, 'UTF-8') . "</pubDate>\n";
 		}
+
 		if (empty($data->category) === false)
 		{
 			if (is_array($data->category))
@@ -135,22 +145,27 @@ class JDocumentRendererRSS extends JDocumentRenderer
 				$feed .= "		<category>" . htmlspecialchars($data->category, ENT_COMPAT, 'UTF-8') . "</category>\n";
 			}
 		}
+
 		if ($data->docs != "")
 		{
 			$feed .= "		<docs>" . htmlspecialchars($data->docs, ENT_COMPAT, 'UTF-8') . "</docs>\n";
 		}
+
 		if ($data->ttl != "")
 		{
 			$feed .= "		<ttl>" . htmlspecialchars($data->ttl, ENT_COMPAT, 'UTF-8') . "</ttl>\n";
 		}
+
 		if ($data->rating != "")
 		{
 			$feed .= "		<rating>" . htmlspecialchars($data->rating, ENT_COMPAT, 'UTF-8') . "</rating>\n";
 		}
+
 		if ($data->skipHours != "")
 		{
 			$feed .= "		<skipHours>" . htmlspecialchars($data->skipHours, ENT_COMPAT, 'UTF-8') . "</skipHours>\n";
 		}
+
 		if ($data->skipDays != "")
 		{
 			$feed .= "		<skipDays>" . htmlspecialchars($data->skipDays, ENT_COMPAT, 'UTF-8') . "</skipDays>\n";
@@ -162,6 +177,7 @@ class JDocumentRendererRSS extends JDocumentRenderer
 			{
 				$data->items[$i]->link = str_replace(' ', '%20', $url . $data->items[$i]->link);
 			}
+
 			$feed .= "		<item>\n";
 			$feed .= "			<title>" . htmlspecialchars(strip_tags($data->items[$i]->title), ENT_COMPAT, 'UTF-8') . "</title>\n";
 			$feed .= "			<link>" . str_replace(' ', '%20', $data->items[$i]->link) . "</link>\n";
@@ -204,16 +220,19 @@ class JDocumentRendererRSS extends JDocumentRenderer
 					$feed .= "			<category>" . htmlspecialchars($data->items[$i]->category, ENT_COMPAT, 'UTF-8') . "</category>\n";
 				}
 			}
+
 			if ($data->items[$i]->comments != "")
 			{
 				$feed .= "			<comments>" . htmlspecialchars($data->items[$i]->comments, ENT_COMPAT, 'UTF-8') . "</comments>\n";
 			}
+
 			if ($data->items[$i]->date != "")
 			{
 				$itemDate = JFactory::getDate($data->items[$i]->date);
 				$itemDate->setTimeZone($tz);
 				$feed .= "			<pubDate>" . htmlspecialchars($itemDate->toRFC822(true), ENT_COMPAT, 'UTF-8') . "</pubDate>\n";
 			}
+
 			if ($data->items[$i]->enclosure != null)
 			{
 				$feed .= "			<enclosure url=\"";
@@ -227,8 +246,10 @@ class JDocumentRendererRSS extends JDocumentRenderer
 
 			$feed .= "		</item>\n";
 		}
+
 		$feed .= "	</channel>\n";
 		$feed .= "</rss>\n";
+
 		return $feed;
 	}
 
